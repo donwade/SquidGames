@@ -1,0 +1,30 @@
+#!/bin/bash
+while read LINE; do
+    RED "$LINE"
+    LHS=`echo $LINE | cut -d'&' -f1 | cut -d'/' -f1 | cut -d'(' -f1`
+    RHS=`echo $LINE | cut -d'&' -f2 | cut -d'/' -f1 | cut -d'(' -f1`
+    ADJ=''
+    if [ "$LHS" == "$RHS" ]; then
+        
+        # did not find an ampersand. re-parse
+
+        # it says xyz meters from some street
+        # 1 ) LHS is everything to the left of the first NUMBER found.
+        # 2 ) RHS is everythine after the word 'of'
+        # 3 ) adjust is everythine not above
+
+        LHS=`echo $LINE | sed 's=.[0-9].*=='`
+        #set -x
+        RHS=`echo $LINE | rev | sed 's=.fo .*==' | rev `  # fo is a rev 'of'
+        ADJ=`echo $LINE | sed "s=$LHS==" | sed "s=$RHS=="`
+        #set +x
+    else
+        RHS=`echo $RHS | cut -c1-`
+    fi
+
+    GREEN "$LHS"
+    CYAN "$RHS"
+    YELLOW "$ADJ"
+    echo
+done < red-lights.txt
+
