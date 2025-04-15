@@ -1,20 +1,15 @@
 #!/bin/bash
-set -x
 # https://developers.google.com/maps/documentation/geocoding/requests-geocoding?_gl=1*1aexkso*_up*MQ..*_ga*MTM0MjQ3MjYxNy4xNzQ0NjY4NzQ3*_ga_NRWSTWS78N*MTc0NDY2ODc0Ny4xLjEuMTc0NDY2OTAyMS4wLjAuMA..#geocoding-lookup
 # https://console.cloud.google.com/google/maps-apis/credentials?utm_source=Docs_CreateAPIKey&utm_content=Docs_geocoding-backend&invt=Abuxcg&project=adsb-plotting-1550952871500
 
 LHS_STREET="Eagleson Rd"
 RHS_STREET="Hazeldean Rd"
 
-#LHS_STREET="11 Aintree Place"
-#RHS_STREET="Bridlewood Dr"
-
 [ "$1" == "" ] || LHS_STREET="$1"
 [ "$2" == "" ] || RHS_STREET="$2"
 
 BASE_CITY='ottawa'
 BASE_PROVINCE='ON'
-
 
 # ***  1) for intersections, do not specify a street number
 # ***  2) only the last specified road /street should specify a city/province designator
@@ -37,13 +32,13 @@ function find_intersection
     grep -A9 "formatted_address" $TEMP | tr -s ' '  > $TEMP2
     LAT="`grep "lat" $TEMP2 | rev | cut -f1 -d' ' | rev`"
     LONG="`grep "lng" $TEMP2 | rev | cut -f1 -d' ' | rev`"
-    cat $TEMP2
+    #cat $TEMP2
 
     # get the name of the intersection it actually resolved to
-    echo -e "$_GREEN"
     WHERE=`grep 'formatted_address' $TEMP | cut -d ":" -f2 | cut -d',' -f1 | cut -d '"' -f2`
-    echo "$WHERE" >&2 
-    echo -e "$_RESET"
+    #echo "$WHERE" >&2 
+    #echo -e "$_GREEN"
+    #echo -e "$_RESET"
 
     echo "${LAT}${LONG}, $WHERE"
 
@@ -51,8 +46,6 @@ function find_intersection
 }
 
 #------------------------------------------------------------------------------------
-
-https://www.google.ca/maps/place/Hazeldean+Rd+%26+Eagleson+Rd,+Ottawa,+ON+K2L+4C6/@45.3039632,-75.8817101,17z/data=!3m1!4b1!4m6!3m5!1s0x4ccdffbb831f2553:0xc4f85d9eb857f3d!8m2!3d45.3039595!4d-75.8768392!16s%2Fg%2F11hb8k4v1z?entry=ttu&g_ep=EgoyMDI1MDQwOS4wIKXMDSoASAFQAw%3D%3D
 
 # http cannot tolerate spaces, put in + signs
 FQGPS_LHS="`echo "$LHS_STREET" | tr ' ' '+'`"
@@ -67,12 +60,10 @@ rm -f $REPORT
 
 if [ -z "$RHS_STREET" ]; then
     # one street specified, probably an address/house
-    shopt -o noglob ||  wget -d -o test.txt -O $TEMP https://maps.googleapis.com/maps/api/geocode/json?address=${FQGPS_LHS}${FQGPS_CITY}\&key="$GOOGLE_KEY"
+    shopt -o noglob |  wget -o test.txt -O $TEMP https://maps.googleapis.com/maps/api/geocode/json?address=${FQGPS_LHS}${FQGPS_CITY}\&key="$GOOGLE_KEY"
 else
     # two streets named, must be looking for an intersection
-    shopt -o noglob ||  wget -d -o test.txt -O $TEMP https://maps.googleapis.com/maps/api/geocode/json?address=${FQGPS_LHS}+and+${FQGPS_RHS}${FQGPS_CITY}\&key="$GOOGLE_KEY"
+    shopt -o noglob |  wget -o test.txt -O $TEMP https://maps.googleapis.com/maps/api/geocode/json?address=${FQGPS_LHS}+and+${FQGPS_RHS}${FQGPS_CITY}\&key="$GOOGLE_KEY"
     find_intersection
 fi
 
-echo "----------------------"
-#cat $TEMP
