@@ -40,7 +40,7 @@ function find_intersection
     #echo -e "$_GREEN"
     #echo -e "$_RESET"
 
-    echo "${LAT}${LONG}, $WHERE"
+    echo "${LAT}${LONG},\"$WHERE\""
 
     set -x
 }
