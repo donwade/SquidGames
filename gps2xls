@@ -26,6 +26,8 @@ while read LINE; do
     GREEN "$LHS"
     CYAN "$RHS"
     YELLOW "$ADJ"
-    echo
+    ./intersection2GPS "$LHS" "$RHS"
+    echo "-------------------------------" >&2
+
 done < red-lights.txt
 
