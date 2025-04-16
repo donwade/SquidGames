@@ -7,31 +7,48 @@ FILE=red-lights.txt
 while read LINE; do
     [ -n "$LINE" ] || continue
     RED "$LINE"
-    LHS=`echo $LINE | cut -d'&' -f1 | cut -d'/' -f1 | cut -d'(' -f1`
-    RHS=`echo $LINE | cut -d'&' -f2 | cut -d'/' -f1 | cut -d'(' -f1`
-    ADJ=''
-    if [ "$LHS" == "$RHS" ]; then
+
+    echo $LINE | grep -qc 'between'
+    ret=$?
+
+    if [ $ret != 0 ]; then
+        # simple red light camera is just a 'point'
+        POINT1_LHS=`echo $LINE | cut -d'&' -f1 | cut -d'/' -f1 | cut -d'(' -f1`
+        POINT1_RHS=`echo $LINE | cut -d'&' -f2 | cut -d'/' -f1 | cut -d'(' -f1`
+        ADJ=''
+    else
+        COMMON_POINT=`echo $LINE | sed 's= between.*=='`
+        echo "$COMMON_POINT"
+
+        POINT_RHS=`echo $LINE | rev | sed 's= dna.*==' | rev`
+        echo "$POINT_RHS"
+
+        POINT_LHS=`echo $LINE | sed "s=$COMMON_POINT==" | sed "s=$POINT_RHS==" | sed 's= between ==' | sed 's= and =='`
+        echo "$POINT_LHS"
+    fi
+
+if [ "$POINT1_LHS" == "$POINT1_RHS" ]; then
         
         # did not find an ampersand. re-parse
 
         # it says xyz meters from some street
-        # 1 ) LHS is everything to the left of the first NUMBER found.
-        # 2 ) RHS is everythine after the word 'of'
+        # 1 ) POINT1_LHS is everything to the left of the first NUMBER found.
+        # 2 ) POINT1_RHS is everythine after the word 'of'
         # 3 ) adjust is everythine not above
 
-        LHS=`echo $LINE | sed 's=.[0-9].*=='`
+        POINT1_LHS=`echo $LINE | sed 's=.[0-9].*=='`
         #set -x
-        RHS=`echo $LINE | rev | sed 's=.fo .*==' | rev `  # fo is a rev 'of'
-        ADJ=`echo $LINE | sed "s=$LHS==" | sed "s=$RHS=="`
+        POINT1_RHS=`echo $LINE | rev | sed 's=.fo .*==' | rev `  # fo is a rev 'of'
+        ADJ=`echo $LINE | sed "s=$POINT1_LHS==" | sed "s=$POINT1_RHS=="`
         #set +x
     else
-        RHS=`echo $RHS | cut -c1-`
+        POINT1_RHS=`echo $POINT1_RHS | cut -c1-`
     fi
 
-    GREEN "$LHS"
-    CYAN "$RHS"
+    GREEN "$POINT1_LHS"
+    CYAN "$POINT1_RHS"
     YELLOW "$ADJ"
-    ./intersection2GPS "$LHS" "$RHS"
+    ./intersection2GPS "$POINT1_LHS" "$POINT1_RHS"
     echo "-------------------------------" >&2
 
 done < $FILE
