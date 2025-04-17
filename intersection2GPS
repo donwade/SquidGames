@@ -25,45 +25,59 @@ TEMP2=`mktemp `
 # parse ouput stream of the http response
 function find_intersection
 {
-    set +x
     grep -q "intersection" $TEMP
-    [ $? == 0 ] || RED "this was not an intersection" || return
-    
+    if [ $? != 0 ]; then
+        RED "no intersection found ${FQGPS_LHS} and ${FQGPS_RHS}"
+        cat $TEMP
+        echo
+        echo " -------------- above is bad (no intersection tag)"
+        return 1
+    fi
+
     grep -A9 "formatted_address" $TEMP | tr -s ' '  > $TEMP2
     LAT="`grep "lat" $TEMP2 | rev | cut -f1 -d' ' | rev`"
     LONG="`grep "lng" $TEMP2 | rev | cut -f1 -d' ' | rev`"
     #cat $TEMP2
 
-    # get the name of the intersection it actually resolved to
+    # get the TEXT NAME of the intersection it actually resolved to
     WHERE=`grep 'formatted_address' $TEMP | cut -d ":" -f2 | cut -d',' -f1 | cut -d '"' -f2`
     #echo "$WHERE" >&2 
+
     #echo -e "$_GREEN"
     #echo -e "$_RESET"
-
     echo "${LAT}${LONG},\"$WHERE\""
 
-    set -x
+    #cat $TEMP
+    #echo " -------------- above is good (intersection tag found)"
+    return 0
 }
 
 #------------------------------------------------------------------------------------
 
-# http cannot tolerate spaces, put in + signs
-FQGPS_LHS="`echo "$LHS_STREET" | tr ' ' '+'`"
-FQGPS_RHS="`echo "$RHS_STREET" | tr ' ' '+'`"
+# http cannot tolerate spaces, put in %20 instead (don't use + signs here)
+
+FQGPS_LHS="`echo "$LHS_STREET" | sed 's= =\%20='`"
+FQGPS_RHS="`echo "$RHS_STREET" | sed 's= =\%20='`"
+
 FQGPS_CITY=",+$BASE_CITY,+$BASE_PROVINCE"
 
-REPORT=test.txt
+REPORT=`mktemp`
 rm -f $REPORT
-
-
-#shopt -o noglob ||  wget -d -o test.txt -O- https://maps.googleapis.com/maps/api/geocode/json?address=1600+Amphitheatre+Parkway,+Mountain+View,+CA\&key="$GOOGLE_KEY"
 
 if [ -z "$RHS_STREET" ]; then
     # one street specified, probably an address/house
-    shopt -o noglob |  wget -o test.txt -O $TEMP https://maps.googleapis.com/maps/api/geocode/json?address=${FQGPS_LHS}${FQGPS_CITY}\&key="$GOOGLE_KEY"
+    CMD="https://maps.googleapis.com/maps/api/geocode/json?address=${FQGPS_LHS}${FQGPS_CITY}\&key=$GOOGLE_KEY"
+
+    #echo "POINT REQUEST = $CMD"
+    shopt -o noglob |  wget -o test.txt -O $TEMP $CMD
+
 else
-    # two streets named, must be looking for an intersection
-    shopt -o noglob |  wget -o test.txt -O $TEMP https://maps.googleapis.com/maps/api/geocode/json?address=${FQGPS_LHS}+and+${FQGPS_RHS}${FQGPS_CITY}\&key="$GOOGLE_KEY"
+
+    # two streets named, must be looking for an intersection (use %26 not the 'and' operator)
+    CMD="https://maps.googleapis.com/maps/api/geocode/json?address=${FQGPS_LHS}+\%26+${FQGPS_RHS}${FQGPS_CITY}\&key="$GOOGLE_KEY""
+
+    #echo "INTERSECTION REQUEST = $CMD"
+    shopt -o noglob |  wget -o test.txt -O $TEMP $CMD
     find_intersection
 fi
 
