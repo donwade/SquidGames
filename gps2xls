@@ -36,9 +36,9 @@ while read LINE; do
             POINT1_RHS=`echo $POINT1_RHS | cut -c1-`
         fi
 
-        GREEN "$POINT1_LHS"
-        CYAN "$POINT1_RHS"
-        YELLOW "$ADJ"
+        GREEN "LHS=$POINT1_LHS"
+        CYAN "RHS=$POINT1_RHS"
+        YELLOW "ADJ=$ADJ"
 
         ./intersection2GPS "$POINT1_LHS" "$POINT1_RHS"
    

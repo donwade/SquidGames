@@ -1,7 +1,6 @@
 #!/bin/bash
 # https://developers.google.com/maps/documentation/geocoding/requests-geocoding?_gl=1*1aexkso*_up*MQ..*_ga*MTM0MjQ3MjYxNy4xNzQ0NjY4NzQ3*_ga_NRWSTWS78N*MTc0NDY2ODc0Ny4xLjEuMTc0NDY2OTAyMS4wLjAuMA..#geocoding-lookup
 # https://console.cloud.google.com/google/maps-apis/credentials?utm_source=Docs_CreateAPIKey&utm_content=Docs_geocoding-backend&invt=Abuxcg&project=adsb-plotting-1550952871500
-
 LHS_STREET="Eagleson Rd"
 RHS_STREET="Hazeldean Rd"
 
@@ -27,7 +26,8 @@ function find_intersection
 {
     grep -q "intersection" $TEMP
     if [ $? != 0 ]; then
-        RED "no intersection found ${FQGPS_LHS} and ${FQGPS_RHS}"
+        RED "oppps"
+        #RED "no intersection found ${FQGPS_LHS} and ${FQGPS_RHS}"
         cat $TEMP
         echo
         echo " -------------- above is bad (no intersection tag)"
@@ -56,8 +56,8 @@ function find_intersection
 
 # http cannot tolerate spaces, put in %20 instead (don't use + signs here)
 
-FQGPS_LHS="`echo "$LHS_STREET" | sed 's= =\%20='`"
-FQGPS_RHS="`echo "$RHS_STREET" | sed 's= =\%20='`"
+FQGPS_LHS="`echo "$LHS_STREET" | sed 's= =\%20=g'`"
+FQGPS_RHS="`echo "$RHS_STREET" | sed 's= =\%20=g'`"
 
 FQGPS_CITY=",+$BASE_CITY,+$BASE_PROVINCE"
 
@@ -76,8 +76,9 @@ else
     # two streets named, must be looking for an intersection (use %26 not the 'and' operator)
     CMD="https://maps.googleapis.com/maps/api/geocode/json?address=${FQGPS_LHS}+\%26+${FQGPS_RHS}${FQGPS_CITY}\&key="$GOOGLE_KEY""
 
-    #echo "INTERSECTION REQUEST = $CMD"
     shopt -o noglob |  wget -o test.txt -O $TEMP $CMD
     find_intersection
+    echo "INTERSECTION REQUEST = $CMD"
+    echo "=============================================="
 fi
 
