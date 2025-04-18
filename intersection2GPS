@@ -56,8 +56,8 @@ function find_intersection
 
 # http cannot tolerate spaces, put in %20 instead (don't use + signs here)
 
-FQGPS_LHS="`echo "$LHS_STREET" | sed 's= =\%20=g'`"
-FQGPS_RHS="`echo "$RHS_STREET" | sed 's= =\%20=g'`"
+FQGPS_LHS="`echo "$LHS_STREET" | sed 's= =\%20=g' | cut -d'(' -f1 | sed 's=\.==g'`"
+FQGPS_RHS="`echo "$RHS_STREET" | sed 's= =\%20=g' | cut -d'(' -f1 | sed 's=\.==g'`"
 
 FQGPS_CITY=",+$BASE_CITY,+$BASE_PROVINCE"
 
