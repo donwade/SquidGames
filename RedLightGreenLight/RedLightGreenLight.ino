@@ -111,11 +111,10 @@ void setup()
 	display.clear();
 	display.setTextAlignment(TEXT_ALIGN_LEFT);
 
-	display.drawString(0, 0, "HI SANDI: ");
+	xprintf(0, "HI SANDI: ");
 	xprintf(1, "HI DON: %d", 33);
 	xprintf(2, "HI BRI: ");
 	xprintf(3, "HI KAREN: ");
-	xprintf(4, "HI JON");
 	display.display();
 
 	 
@@ -123,10 +122,16 @@ void setup()
 
 void loop()
 {
+  display.clear();
   Serial.print("Latitude  : ");
   Serial.println(gps.location.lat(), 5);
+  
+  xprintf(0, "LA=%9.7f", gps.location.lat());
+  
   Serial.print("Longitude : ");
   Serial.println(gps.location.lng(), 4);
+  xprintf(1, "LO=%9.7f", gps.location.lng());
+
   Serial.print("Satellites: ");
   Serial.println(gps.satellites.value());
   Serial.print("Altitude  : ");
@@ -142,6 +147,8 @@ void loop()
   Serial.println(gps.speed.kmph()); 
   Serial.println("**********************");
 
+  display.display();
+  
   smartDelay(1000);
 
   if (millis() > 5000 && gps.charsProcessed() < 10)
