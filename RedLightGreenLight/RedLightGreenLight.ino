@@ -35,6 +35,45 @@ SSD1306 display(0x3c, 21, 22);
 TinyGPSPlus gps;
 HardwareSerial GPS(1);
 AXP20X_Class axp;
+//------------------------------------------------------------------
+u_int8_t char_height = 0;
+
+static void setFont(uint8_t size)
+{
+	switch (size)
+	{
+		case 10:
+			display.setFont(ArialMT_Plain_10);
+			char_height = 10;
+		break;
+		
+		case 16:
+			display.setFont(ArialMT_Plain_16);
+			char_height = 16;
+		break;
+
+		case 24:
+			display.setFont(ArialMT_Plain_24);
+			char_height = 24;
+		break;
+	}
+}
+
+int  xprintf(uint8_t lineNo, const char *format, ...) 
+{
+	va_list args;
+	va_start(args, format);
+	char buffer[100];
+	vsprintf(buffer, format, args);
+	
+    display.drawString(0, lineNo * char_height, buffer);
+	
+	va_end(args);
+	return 0;
+}
+
+
+//------------------------------------------------------------------
 
 
 void setup()
@@ -61,6 +100,25 @@ void setup()
 	axp.setPowerOutPut(AXP192_EXTEN, AXP202_ON);
 	axp.setPowerOutPut(AXP192_DCDC1, AXP202_ON);
 	GPS.begin(9600, SERIAL_8N1, 34, 12);   //17-TX 18-RX
+	
+	display.init();
+	display.flipScreenVertically();  
+
+	//display.setFont(ArialMT_Plain_16);
+	setFont(16);
+
+
+	display.clear();
+	display.setTextAlignment(TEXT_ALIGN_LEFT);
+
+	display.drawString(0, 0, "HI SANDI: ");
+	xprintf(1, "HI DON: %d", 33);
+	xprintf(2, "HI BRI: ");
+	xprintf(3, "HI KAREN: ");
+	xprintf(4, "HI JON");
+	display.display();
+
+	 
 }
 
 void loop()
