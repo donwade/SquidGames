@@ -120,34 +120,46 @@ void setup()
 	 
 }
 
+void led_display1(void)
+{
+	display.clear();
+	xprintf(0, "LA=%+9.7f", gps.location.lat());
+	xprintf(1, "LO=%+9.7f", gps.location.lng());
+	xprintf(2, "DIR=%3d %3s", (int)gps.course.deg(), gps.cardinal(gps.course.deg()));
+	xprintf(3, "M/S=%3.1f", gps.speed.mps());
+	//xprintf(3, "%02d/%02d/%02d", gps.date.day(), gps.date.month(), gps.date.year());
+	display.display();
+}
+
 void loop()
 {
-  display.clear();
   Serial.print("Latitude  : ");
   Serial.println(gps.location.lat(), 5);
   
-  xprintf(0, "LA=%9.7f", gps.location.lat());
   
   Serial.print("Longitude : ");
   Serial.println(gps.location.lng(), 4);
-  xprintf(1, "LO=%9.7f", gps.location.lng());
 
+  led_display1();
+  
   Serial.print("Satellites: ");
   Serial.println(gps.satellites.value());
   Serial.print("Altitude  : ");
   Serial.print(gps.altitude.feet() / 3.2808);
   Serial.println("M");
+  
   Serial.print("Time      : ");
   Serial.print(gps.time.hour());
   Serial.print(":");
   Serial.print(gps.time.minute());
   Serial.print(":");
   Serial.println(gps.time.second());
+  
+
   Serial.print("Speed     : ");
   Serial.println(gps.speed.kmph()); 
   Serial.println("**********************");
 
-  display.display();
   
   smartDelay(1000);
 
