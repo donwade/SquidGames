@@ -115,13 +115,17 @@ int  xprintf(uint8_t lineNo, const char *format, ...)
 void loop(){while(1) delay(-1);};  // keep arduino happy
 
 //---------------------------------------------------------
+char ssid_keep[17] = "== none ====";
+
 void led_display1(void)
 {
-	display.clear();
+	//display.clear();
 	xprintf(0, "LA=%+9.7f", gps.location.lat());
 	xprintf(1, "LO=%+9.7f", gps.location.lng());
 	xprintf(2, "DIR=%3d %3s", (int)gps.course.deg(), gps.cardinal(gps.course.deg()));
-	xprintf(3, "M/S=%6.1f", gps.speed.mps());
+	xprintf(3, "%s", ssid_keep);
+	
+	//xprintf(3, "M/S=%6.1f", gps.speed.mps());
 	//xprintf(3, "%02d/%02d/%02d", gps.date.day(), gps.date.month(), gps.date.year());
 	display.display();
 }
@@ -230,12 +234,13 @@ int32_t get_data_frames(Frame *frame, int32_t frame_count)
 
 // Return true to connect, false will continue scanning: You can can use this
 // callback to build a list.
-bool isValid(const char* ssid, esp_bd_addr_t address, int rssi){
+
+
+bool isValid(const char* btSSID, esp_bd_addr_t address, int rssi){
   static uint8_t hi = 0;
   hi++;
-  Serial.printf("available SSID: %s %d\n", ssid, hi);
-  xprintf( hi & 3, "%s %d", ssid, hi);
-  display.display();
+  snprintf(ssid_keep, sizeof(ssid_keep), "%s", btSSID);
+  Serial.printf("available SSID: %s %d\n", btSSID, hi);
   //return false;
   return true;
 }
