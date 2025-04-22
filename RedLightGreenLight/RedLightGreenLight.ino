@@ -72,8 +72,82 @@ int  xprintf(uint8_t lineNo, const char *format, ...)
 	return 0;
 }
 
+//---------------------------------------------------------
 
-//------------------------------------------------------------------
+void loop(){while(1) delay(-1);};  // keep arduino happy
+
+//---------------------------------------------------------
+void led_display1(void)
+{
+	display.clear();
+	xprintf(0, "LA=%+9.7f", gps.location.lat());
+	xprintf(1, "LO=%+9.7f", gps.location.lng());
+	xprintf(2, "DIR=%3d %3s", (int)gps.course.deg(), gps.cardinal(gps.course.deg()));
+	xprintf(3, "M/S=%6.1f", gps.speed.mps());
+	//xprintf(3, "%02d/%02d/%02d", gps.date.day(), gps.date.month(), gps.date.year());
+	display.display();
+}
+//---------------------------------------------------------
+
+void loop1(void *not_used)
+{
+	while(1)
+	{
+		Serial.print("Latitude  : ");
+		Serial.println(gps.location.lat(), 5);
+
+
+		Serial.print("Longitude : ");
+		Serial.println(gps.location.lng(), 4);
+
+		led_display1();
+
+		Serial.print("Satellites: ");
+		Serial.println(gps.satellites.value());
+		Serial.print("Altitude  : ");
+		Serial.print(gps.altitude.feet() / 3.2808);
+		Serial.println("M");
+
+		Serial.print("Time      : ");
+		Serial.print(gps.time.hour());
+		Serial.print(":");
+		Serial.print(gps.time.minute());
+		Serial.print(":");
+		Serial.println(gps.time.second());
+
+
+		Serial.print("Speed     : ");
+		Serial.println(gps.speed.kmph()); 
+		Serial.println("**********************");
+
+
+		smartDelay(1000);
+
+		if (millis() > 5000 && gps.charsProcessed() < 10)
+		Serial.println(F("No GPS data received: check wiring"));
+	}
+}
+
+//---------------------------------------------------------
+
+void loop2(void *not_used)
+{
+	while(1) delay(1000);
+}
+
+//---------------------------------------------------------
+
+static void smartDelay(unsigned long ms)
+{
+  unsigned long start = millis();
+  do
+  {
+    while (GPS.available())
+      gps.encode(GPS.read());
+  } while (millis() - start < ms);
+}
+
+//---------------------------------------------------------
 
 
 void setup()
@@ -103,76 +177,18 @@ void setup()
 	
 	display.init();
 	display.flipScreenVertically();  
-
-	//display.setFont(ArialMT_Plain_16);
 	setFont(16);
-
-
 	display.clear();
 	display.setTextAlignment(TEXT_ALIGN_LEFT);
 
-	xprintf(0, "HI SANDI: ");
-	xprintf(1, "HI DON: %d", 33);
-	xprintf(2, "HI BRI: ");
-	xprintf(3, "HI KAREN: ");
+	xprintf(0, "START");
 	display.display();
+	delay(3000);
+	
 
+	xTaskCreatePinnedToCore(loop2, "loop2", 4096, NULL, 1, NULL, 1);
+	xTaskCreatePinnedToCore(loop1, "loop1", 4096, NULL, 1, NULL, 0);
 	 
 }
 
-void led_display1(void)
-{
-	display.clear();
-	xprintf(0, "LA=%+9.7f", gps.location.lat());
-	xprintf(1, "LO=%+9.7f", gps.location.lng());
-	xprintf(2, "DIR=%3d %3s", (int)gps.course.deg(), gps.cardinal(gps.course.deg()));
-	xprintf(3, "M/S=%3.1f", gps.speed.mps());
-	//xprintf(3, "%02d/%02d/%02d", gps.date.day(), gps.date.month(), gps.date.year());
-	display.display();
-}
 
-void loop()
-{
-  Serial.print("Latitude  : ");
-  Serial.println(gps.location.lat(), 5);
-  
-  
-  Serial.print("Longitude : ");
-  Serial.println(gps.location.lng(), 4);
-
-  led_display1();
-  
-  Serial.print("Satellites: ");
-  Serial.println(gps.satellites.value());
-  Serial.print("Altitude  : ");
-  Serial.print(gps.altitude.feet() / 3.2808);
-  Serial.println("M");
-  
-  Serial.print("Time      : ");
-  Serial.print(gps.time.hour());
-  Serial.print(":");
-  Serial.print(gps.time.minute());
-  Serial.print(":");
-  Serial.println(gps.time.second());
-  
-
-  Serial.print("Speed     : ");
-  Serial.println(gps.speed.kmph()); 
-  Serial.println("**********************");
-
-  
-  smartDelay(1000);
-
-  if (millis() > 5000 && gps.charsProcessed() < 10)
-    Serial.println(F("No GPS data received: check wiring"));
-}
-
-static void smartDelay(unsigned long ms)
-{
-  unsigned long start = millis();
-  do
-  {
-    while (GPS.available())
-      gps.encode(GPS.read());
-  } while (millis() - start < ms);
-}
