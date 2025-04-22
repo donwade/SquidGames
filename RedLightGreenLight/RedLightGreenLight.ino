@@ -13,13 +13,45 @@ Also get TinyGPS++ library from:
 https://github.com/mikalhart/TinyGPSPlus
 ******************************************/
 
+
+// Bluetooth for Arduino (C) 2020 Phil Schatzmann
+// https://github.com/pschatzmann/ESP32-A2DP.git
+// https://github.com/pschatzmann/arduino-audio-tools.git
+
 #include <TinyGPS++.h>
 #include <axp20x.h>
+
 
 #include <SPI.h>
 #include <Wire.h>  
 #include "SSD1306.h" 
 
+#include "BluetoothA2DPSource.h"
+#include <math.h> 
+
+#include <assert.h>
+
+/*
+// handle diagnostic informations given by assertion and abort program execution:
+void __assert_func(const char *__file, int __lineno, const char *__func, const char *__sexp) 
+{
+    // transmit diagnostic informations through serial link.
+    //Serial.print("assert" << __file << ":" << __lineno << "(" << __func << ")" << __sexp);
+    Serial.printf("assert %s:%d %s %s %s ", __file , __lineno, __func, __sexp);
+}
+*/
+void assertion_failure(const char* expr, const char* file, int linenum)
+{
+    Serial.print("Assertion failed in '");
+    Serial.print(file);
+    Serial.print("' on line ");
+    Serial.print(linenum);
+    Serial.print(": ");
+    Serial.println(expr);
+    Serial.flush();
+
+    while (1);
+}
 
 #define SCK     5    // GPIO5  -- SX1278's SCK
 #define MISO    19   // GPIO19 -- SX1278's MISO
@@ -65,8 +97,14 @@ int  xprintf(uint8_t lineNo, const char *format, ...)
 	va_start(args, format);
 	char buffer[100];
 	vsprintf(buffer, format, args);
+
+	// 'erase past background to blace'
+	display.setColor(BLACK);
+	display.fillRect(0, lineNo * char_height, display.getWidth(), char_height);
 	
-    display.drawString(0, lineNo * char_height, buffer);
+	display.setColor(WHITE);
+	display.drawString(0, lineNo * char_height, buffer);
+	display.display();
 	
 	va_end(args);
 	return 0;
@@ -128,6 +166,81 @@ void loop1(void *not_used)
 	}
 }
 
+
+
+#define left_freq  13.
+#define right_freq 40.
+
+uint32_t callback_ctr =0;
+uint32_t tick_ctr = 0;
+
+BluetoothA2DPSource a2dp_source;
+
+// The supported audio codec in ESP32 A2DP is SBC. SBC audio stream is encoded
+// from PCM data normally formatted as 44.1kHz sampling rate, two-channel 16-bit sample data
+
+int32_t get_data_frames(Frame *frame, int32_t frame_count)
+{
+    static float m_time = 0.0;
+    float m_amplitude = 20000.0;  // -32,768 to 32,767
+    float m_tickPeriod = 1.0 / 44100.0;
+    float m_phase = 0.0;
+    float pi_2 = PI * 2.0;
+	callback_ctr++;
+	
+    // fill the channel data
+    for (int sample = 0; sample < frame_count; ++sample) 
+	{
+#if 1
+		int mod = tick_ctr / left_freq;
+		
+		if (mod & 1)
+		{
+			frame[sample].channel1 = m_amplitude;
+		}
+		else 
+		{
+			frame[sample].channel1 = -m_amplitude;
+		}
+		
+		mod = tick_ctr / right_freq;
+		if (mod & 1)
+		{
+			frame[sample].channel2 = m_amplitude;
+		}
+		else 
+		{
+			frame[sample].channel2 = -m_amplitude;
+		}
+		
+#else
+		*/
+        float left_angle = pi_2 * left_freq * m_time + m_phase;
+        frame[sample].channel1 = m_amplitude * sin(left_angle);
+
+        float right_angle = pi_2 * right_freq * m_time + m_phase;
+        frame[sample].channel2 = m_amplitude * sin(right_angle);
+#endif	
+		tick_ctr++;
+        m_time += m_tickPeriod;
+    }
+
+    return frame_count;
+}
+
+// Return true to connect, false will continue scanning: You can can use this
+// callback to build a list.
+bool isValid(const char* ssid, esp_bd_addr_t address, int rssi){
+  static uint8_t hi = 0;
+  hi++;
+  Serial.printf("available SSID: %s %d\n", ssid, hi);
+  xprintf( hi & 3, "%s %d", ssid, hi);
+  display.display();
+  //return false;
+  return true;
+}
+
+
 //---------------------------------------------------------
 
 void loop2(void *not_used)
@@ -175,12 +288,28 @@ void setup()
 	axp.setPowerOutPut(AXP192_DCDC1, AXP202_ON);
 	GPS.begin(9600, SERIAL_8N1, 34, 12);   //17-TX 18-RX
 	
+	// bluetooth init
+	a2dp_source.set_ssid_callback(isValid);
+	a2dp_source.set_auto_reconnect(false);
+	a2dp_source.set_data_callback_in_frames(get_data_frames);
+	a2dp_source.set_volume(30);
+	a2dp_source.start();  
+
 	display.init();
 	display.flipScreenVertically();  
 	setFont(16);
 	display.clear();
 	display.setTextAlignment(TEXT_ALIGN_LEFT);
 
+	xprintf(0, "AAAAAAA");
+	display.display(); delay(1000);
+	xprintf(0, "BBBBBB");
+	display.display(); delay(1000);
+	xprintf(0, "CCCCC");
+	display.display(); delay(1000);
+	xprintf(0, "DDDD");
+	display.display(); delay(1000);
+	
 	xprintf(0, "START");
 	display.display();
 	delay(3000);
