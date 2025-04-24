@@ -31,27 +31,16 @@ https://github.com/mikalhart/TinyGPSPlus
 
 #include <assert.h>
 
-/*
-// handle diagnostic informations given by assertion and abort program execution:
-void __assert_func(const char *__file, int __lineno, const char *__func, const char *__sexp) 
-{
-    // transmit diagnostic informations through serial link.
-    //Serial.print("assert" << __file << ":" << __lineno << "(" << __func << ")" << __sexp);
-    Serial.printf("assert %s:%d %s %s %s ", __file , __lineno, __func, __sexp);
-}
-*/
-void assertion_failure(const char* expr, const char* file, int linenum)
-{
-    Serial.print("Assertion failed in '");
-    Serial.print(file);
-    Serial.print("' on line ");
-    Serial.print(linenum);
-    Serial.print(": ");
-    Serial.println(expr);
-    Serial.flush();
+//------------------------------------------------------------------
 
-    while (1);
-}
+typedef struct gpsLocation { float lng; float lat; };
+gpsLocation instant;
+
+#define GPS_SAMPLE_SIZE 6
+gpsLocation samples [ GPS_SAMPLE_SIZE ];
+uint8_t sIndex;
+
+//------------------------------------------------------------------
 
 #define SCK     5    // GPIO5  -- SX1278's SCK
 #define MISO    19   // GPIO19 -- SX1278's MISO
@@ -67,7 +56,82 @@ SSD1306 display(0x3c, 21, 22);
 TinyGPSPlus gps;
 HardwareSerial GPS(1);
 AXP20X_Class axp;
+
 //------------------------------------------------------------------
+void getOldestSample(gpsLocation *result)
+{
+	uint8_t trial;
+	trial = (sIndex + GPS_SAMPLE_SIZE -1) % GPS_SAMPLE_SIZE;
+	result->lat = samples[trial].lat;
+	result->lng = samples[trial].lng;
+	//Serial.printf("xxx=%d" , trial);
+}
+
+//------------------------------------------------------------------
+void getGPSavg(gpsLocation *result)
+{
+	//assert(result);
+	result->lat = 0.0;
+	result->lng = 0.0;
+	
+	for (int i= 0; i < GPS_SAMPLE_SIZE; i++)
+	{
+		result->lat += samples[i].lat;
+		result->lng += samples[i].lng;
+	}
+	result->lat /= float(GPS_SAMPLE_SIZE);
+	result->lng /= float(GPS_SAMPLE_SIZE);
+}
+
+//------------------------------------------------------------------
+struct Button {
+    const uint8_t pinNum;
+    uint32_t numberKeyPresses;
+    bool pushed;
+};
+
+Button usrButton = {38, 0, false};
+
+//variables to keep track of the timing of recent interrupts
+
+void IRAM_ATTR buttonISR() 
+{
+	static unsigned long now = 0;	
+	static unsigned long last_button_time = 0; 
+	
+    now = millis();
+	usrButton.pushed = digitalRead(usrButton.pinNum);
+	
+	/*if (now - last_button_time > 250)
+	{
+		usrButton.numberKeyPresses++;
+		usrButton.pressed = Up;
+		last_button_time = now;
+	}
+	*/
+}
+//----------------------------
+void setupButton() 
+{
+    pinMode(usrButton.pinNum, INPUT_PULLUP);
+    attachInterrupt(usrButton.pinNum, buttonISR, CHANGE);
+}
+//----------------------------
+bool bButtonDown() {
+	static bool buttonState = true;
+
+	bool now = usrButton.pushed;
+	
+	if ( now != buttonState)
+	{
+		Serial.printf("button is %d\n", now);
+	}
+	buttonState = now;
+	return now;
+}
+
+//------------------------------------------------------------------
+
 u_int8_t char_height = 0;
 
 static void setFont(uint8_t size)
@@ -90,6 +154,7 @@ static void setFont(uint8_t size)
 		break;
 	}
 }
+//---------------------------------------------------------
 
 int  xprintf(uint8_t lineNo, const char *format, ...) 
 {
@@ -104,7 +169,6 @@ int  xprintf(uint8_t lineNo, const char *format, ...)
 	
 	display.setColor(WHITE);
 	display.drawString(0, lineNo * char_height, buffer);
-	display.display();
 	
 	va_end(args);
 	return 0;
@@ -117,7 +181,7 @@ void loop(){while(1) delay(-1);};  // keep arduino happy
 //---------------------------------------------------------
 char ssid_keep[17] = "== none ====";
 
-void led_display1(void)
+void absolute_display(void)
 {
 	//display.clear();
 	xprintf(0, "LA=%+9.7f", gps.location.lat());
@@ -130,11 +194,87 @@ void led_display1(void)
 	display.display();
 }
 //---------------------------------------------------------
+typedef enum absStates_e { START, AWAY, LOCK, HOLD };
+
+absStates_e absState = START;
+
+gpsLocation homeLocation;
+
+void stateDisplay(void)
+{
+	gpsLocation temp;
+	int dist;
+	int course;
+	const char *dir;
+	gpsLocation old;
+	
+	switch (absState)
+	{
+		case START:
+
+			// course direction is instantanous
+			
+			getOldestSample(&old);
+			course = (int)gps.courseTo(instant.lat, instant.lng, old.lat, old.lng );
+			dir = gps.cardinal(course);
+			
+			xprintf(0, "LA=%+9.7f", instant.lat);
+			xprintf(1, "LN=%+9.7f", instant.lng);
+			xprintf(2, "AWAY=%d %s", course, dir);
+			xprintf(3, "PRESS2DROP");
+			
+			if (digitalRead(usrButton.pinNum) == false)
+			{
+				getGPSavg(&temp);
+				homeLocation = temp;
+				absState = AWAY;
+			}
+		break;
+
+		case AWAY:
+			// course direction is view FROM camera perspective.
+			dist = gps.distanceBetween(homeLocation.lat, homeLocation.lng, instant.lat, instant.lng);
+			course = (int)gps.courseTo(homeLocation.lat, homeLocation.lng, instant.lat, instant.lng);
+			dir = gps.cardinal(course);
+			
+			xprintf(0, "LA=%+9.7f", instant.lat);
+			xprintf(1, "LO=%+9.7f", instant.lng);
+			xprintf(2, "DIST=%d", dist);
+			xprintf(3, "AWAY=%d %s", course, dir);
+			
+		break;
+
+		case LOCK:
+		break;
+
+		case HOLD:
+		break;
+	}
+	
+	//display.clear();
+	//xprintf(0, "LA=%+9.7f", gps.location.lat());
+	//xprintf(1, "LO=%+9.7f", gps.location.lng());
+	//xprintf(2, "DIR=%3d %3s", (int)gps.course.deg(), gps.cardinal(gps.course.deg()));
+	//xprintf(3, "%s", ssid_keep);
+	
+	//xprintf(3, "M/S=%6.1f", gps.speed.mps());
+	//xprintf(3, "%02d/%02d/%02d", gps.date.day(), gps.date.month(), gps.date.year());
+}
+//---------------------------------------------------------
 
 void loop1(void *not_used)
 {
 	while(1)
 	{
+		instant.lat = gps.location.lat();
+		instant.lng = gps.location.lng();
+
+		samples[sIndex].lat = instant.lat;
+		samples[sIndex].lng = instant.lng;
+		
+		if (++sIndex == GPS_SAMPLE_SIZE) sIndex = 0;
+	
+		
 		Serial.print("Latitude  : ");
 		Serial.println(gps.location.lat(), 5);
 
@@ -142,7 +282,8 @@ void loop1(void *not_used)
 		Serial.print("Longitude : ");
 		Serial.println(gps.location.lng(), 4);
 
-		led_display1();
+		//absolute_display();
+		stateDisplay();
 
 		Serial.print("Satellites: ");
 		Serial.println(gps.satellites.value());
@@ -218,7 +359,6 @@ int32_t get_data_frames(Frame *frame, int32_t frame_count)
 		}
 		
 #else
-		*/
         float left_angle = pi_2 * left_freq * m_time + m_phase;
         frame[sample].channel1 = m_amplitude * sin(left_angle);
 
@@ -250,7 +390,11 @@ bool isValid(const char* btSSID, esp_bd_addr_t address, int rssi){
 
 void loop2(void *not_used)
 {
-	while(1) delay(1000);
+	while(1)
+	{
+		delay(300);
+		display.display();
+	}
 }
 
 //---------------------------------------------------------
@@ -262,6 +406,7 @@ static void smartDelay(unsigned long ms)
   {
     while (GPS.available())
       gps.encode(GPS.read());
+	  delay(100);		// stop hard loop allow multi tasking
   } while (millis() - start < ms);
 }
 
@@ -271,6 +416,8 @@ static void smartDelay(unsigned long ms)
 void setup()
 {
 	Serial.begin(115200);
+
+	setupButton();
 	
 	// oled stuff
 	pinMode(16,OUTPUT);
@@ -286,19 +433,22 @@ void setup()
 	} else {
 	Serial.println("AXP192 Begin FAIL");
 	}
+	
 	axp.setPowerOutPut(AXP192_LDO2, AXP202_ON);
 	axp.setPowerOutPut(AXP192_LDO3, AXP202_ON);
 	axp.setPowerOutPut(AXP192_DCDC2, AXP202_ON);
 	axp.setPowerOutPut(AXP192_EXTEN, AXP202_ON);
 	axp.setPowerOutPut(AXP192_DCDC1, AXP202_ON);
 	GPS.begin(9600, SERIAL_8N1, 34, 12);   //17-TX 18-RX
-	
+
+#if 0	
 	// bluetooth init
 	a2dp_source.set_ssid_callback(isValid);
 	a2dp_source.set_auto_reconnect(false);
 	a2dp_source.set_data_callback_in_frames(get_data_frames);
 	a2dp_source.set_volume(30);
 	a2dp_source.start();  
+#endif
 
 	display.init();
 	display.flipScreenVertically();  
@@ -306,15 +456,6 @@ void setup()
 	display.clear();
 	display.setTextAlignment(TEXT_ALIGN_LEFT);
 
-	xprintf(0, "AAAAAAA");
-	display.display(); delay(1000);
-	xprintf(0, "BBBBBB");
-	display.display(); delay(1000);
-	xprintf(0, "CCCCC");
-	display.display(); delay(1000);
-	xprintf(0, "DDDD");
-	display.display(); delay(1000);
-	
 	xprintf(0, "START");
 	display.display();
 	delay(3000);
