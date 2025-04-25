@@ -31,14 +31,17 @@ https://github.com/mikalhart/TinyGPSPlus
 
 #include <assert.h>
 
+#define MIN_SPEED_KPH 9 // dont do compass if speed lower than this.
 //------------------------------------------------------------------
 
-typedef struct gpsLocation { float lng; float lat; };
+typedef struct gpsLocation { double lng; double lat; };
 gpsLocation instant;
 
 #define GPS_SAMPLE_SIZE 6
 gpsLocation samples [ GPS_SAMPLE_SIZE ];
 uint8_t sIndex;
+
+char BT_SSID[17] = "== none ====";
 
 //------------------------------------------------------------------
 
@@ -60,11 +63,9 @@ AXP20X_Class axp;
 //------------------------------------------------------------------
 void getOldestSample(gpsLocation *result)
 {
-	uint8_t trial;
-	trial = (sIndex + GPS_SAMPLE_SIZE -1) % GPS_SAMPLE_SIZE;
-	result->lat = samples[trial].lat;
-	result->lng = samples[trial].lng;
-	//Serial.printf("xxx=%d" , trial);
+	result->lat = samples[sIndex].lat;
+	result->lng = samples[sIndex].lng;
+	Serial.printf("OLDEST xxx=%d" , sIndex);
 }
 
 //------------------------------------------------------------------
@@ -160,14 +161,14 @@ int  xprintf(uint8_t lineNo, const char *format, ...)
 {
 	va_list args;
 	va_start(args, format);
-	char buffer[100];
-	vsprintf(buffer, format, args);
+	char buffer[30];
+	vsnprintf(buffer, sizeof(buffer)-1, format, args);
 
-	// 'erase past background to blace'
+	// erase past background to black
 	display.setColor(BLACK);
 	display.fillRect(0, lineNo * char_height, display.getWidth(), char_height);
-	
 	display.setColor(WHITE);
+	
 	display.drawString(0, lineNo * char_height, buffer);
 	
 	va_end(args);
@@ -179,86 +180,115 @@ int  xprintf(uint8_t lineNo, const char *format, ...)
 void loop(){while(1) delay(-1);};  // keep arduino happy
 
 //---------------------------------------------------------
-char ssid_keep[17] = "== none ====";
 
-void absolute_display(void)
-{
-	//display.clear();
-	xprintf(0, "LA=%+9.7f", gps.location.lat());
-	xprintf(1, "LO=%+9.7f", gps.location.lng());
-	xprintf(2, "DIR=%3d %3s", (int)gps.course.deg(), gps.cardinal(gps.course.deg()));
-	xprintf(3, "%s", ssid_keep);
-	
-	//xprintf(3, "M/S=%6.1f", gps.speed.mps());
-	//xprintf(3, "%02d/%02d/%02d", gps.date.day(), gps.date.month(), gps.date.year());
-	display.display();
-}
 //---------------------------------------------------------
-typedef enum absStates_e { START, AWAY, LOCK, HOLD };
+typedef enum absStates_e { MARK_START, MARK_END, FLEEING, CLOSING };
 
-absStates_e absState = START;
+absStates_e absState = MARK_START;
 
-gpsLocation homeLocation;
+gpsLocation startLocation;
+gpsLocation endLocation;
+
+static int veh_course;
+static const char *veh_cardinal;
 
 void stateDisplay(void)
 {
-	gpsLocation temp;
+	gpsLocation slowAvg;
 	int dist;
 	int course;
 	const char *dir;
-	gpsLocation old;
+
+	getGPSavg(&slowAvg);
 	
 	switch (absState)
 	{
-		case START:
+		case MARK_START:
 
-			// course direction is instantanous
+			// distance has no meaning as we have no start point
 			
-			getOldestSample(&old);
-			course = (int)gps.courseTo(instant.lat, instant.lng, old.lat, old.lng );
-			dir = gps.cardinal(course);
 			
 			xprintf(0, "LA=%+9.7f", instant.lat);
 			xprintf(1, "LN=%+9.7f", instant.lng);
-			xprintf(2, "AWAY=%d %s", course, dir);
-			xprintf(3, "PRESS2DROP");
-			
+
+			xprintf(3, "START PIN?");
+
+			if (gps.speed.kmph() > 5)
+				xprintf(2, "%3d %s", veh_course, veh_cardinal);
+			else
+				xprintf(2, "%2d/%2d/%4d S=%2d", gps.date.day(), gps.date.month(), 
+						gps.date.year(), gps.satellites.value());
+
+			display.display();
+
 			if (digitalRead(usrButton.pinNum) == false)
 			{
-				getGPSavg(&temp);
-				homeLocation = temp;
-				absState = AWAY;
+				startLocation = slowAvg;
+				absState = MARK_END;
+				delay(1000);
 			}
 		break;
 
-		case AWAY:
-			// course direction is view FROM camera perspective.
-			dist = gps.distanceBetween(homeLocation.lat, homeLocation.lng, instant.lat, instant.lng);
-			course = (int)gps.courseTo(homeLocation.lat, homeLocation.lng, instant.lat, instant.lng);
+		case MARK_END:
+			// course direction is view FROM camera moving AWAY.
+			dist = gps.distanceBetween(startLocation.lat, startLocation.lng, instant.lat, instant.lng);
+			course = (int)gps.courseTo(startLocation.lat, startLocation.lng, instant.lat, instant.lng);
 			dir = gps.cardinal(course);
 			
 			xprintf(0, "LA=%+9.7f", instant.lat);
 			xprintf(1, "LO=%+9.7f", instant.lng);
-			xprintf(2, "DIST=%d", dist);
-			xprintf(3, "AWAY=%d %s", course, dir);
+			xprintf(2, "END=%d %s", course, dir);
+			xprintf(3, "END PIN?");
+			display.display();
+
+			if (digitalRead(usrButton.pinNum) == false)
+			{
+				endLocation = slowAvg;
+				absState = FLEEING;
+				delay(500);
+			}
 			
 		break;
 
-		case LOCK:
+		case FLEEING:
+			// course direction is view FROM camera moving AWAY.
+			dist = gps.distanceBetween(startLocation.lat, startLocation.lng, endLocation.lat, endLocation.lng);
+			course = (int)gps.courseTo(startLocation.lat, startLocation.lng, endLocation.lat, endLocation.lng);
+			dir = gps.cardinal(course);
+			
+			xprintf(0, "LA=%+9.7f", startLocation.lat);
+			xprintf(1, "LO=%+9.7f", startLocation.lng);
+			xprintf(2, "END=%d %s", course, dir);
+			xprintf(3, "LEAVING");
+			display.display();
+
+			if (digitalRead(usrButton.pinNum) == false)
+			{
+				absState = CLOSING;
+				delay(250);
+			}
 		break;
 
-		case HOLD:
-		break;
+		case CLOSING:
+			// course direction is view FROM distance going to CAMERA
+			dist = gps.distanceBetween(endLocation.lat, endLocation.lng, startLocation.lat, startLocation.lng );
+			course = (int)gps.courseTo(endLocation.lat, endLocation.lng, startLocation.lat, startLocation.lng );
+			dir = gps.cardinal(course);
+			
+			xprintf(0, "LA=%+9.7f", endLocation.lat);
+			xprintf(1, "LO=%+9.7f", endLocation.lng);
+			xprintf(2, "END=%d %s", course, dir);
+			xprintf(3, "APPROACHING");
+			display.display();
+
+			if (digitalRead(usrButton.pinNum) == false)
+			{
+				absState = FLEEING;
+				delay(250);
+			}
+
 	}
 	
-	//display.clear();
-	//xprintf(0, "LA=%+9.7f", gps.location.lat());
-	//xprintf(1, "LO=%+9.7f", gps.location.lng());
-	//xprintf(2, "DIR=%3d %3s", (int)gps.course.deg(), gps.cardinal(gps.course.deg()));
-	//xprintf(3, "%s", ssid_keep);
-	
-	//xprintf(3, "M/S=%6.1f", gps.speed.mps());
-	//xprintf(3, "%02d/%02d/%02d", gps.date.day(), gps.date.month(), gps.date.year());
 }
 //---------------------------------------------------------
 
@@ -271,9 +301,22 @@ void loop1(void *not_used)
 
 		samples[sIndex].lat = instant.lat;
 		samples[sIndex].lng = instant.lng;
-		
+
+		// sIndex is left pointing to NEXT position to write to.
+		// therefore sIndex points to oldest entry until written.
 		if (++sIndex == GPS_SAMPLE_SIZE) sIndex = 0;
 	
+
+		// get direction onlyif going fast enough
+		// otherwise it points all over the place
+		if (gps.speed.kmph() > MIN_SPEED_KPH )
+		{
+			gpsLocation old;
+			getOldestSample(&old);
+			veh_course = (int)gps.courseTo(old.lat, old.lng, instant.lat, instant.lng );
+			veh_cardinal = gps.cardinal(veh_course);
+		}
+
 		
 		Serial.print("Latitude  : ");
 		Serial.println(gps.location.lat(), 5);
@@ -379,7 +422,7 @@ int32_t get_data_frames(Frame *frame, int32_t frame_count)
 bool isValid(const char* btSSID, esp_bd_addr_t address, int rssi){
   static uint8_t hi = 0;
   hi++;
-  snprintf(ssid_keep, sizeof(ssid_keep), "%s", btSSID);
+  snprintf(BT_SSID, sizeof(BT_SSID), "%s", btSSID);
   Serial.printf("available SSID: %s %d\n", btSSID, hi);
   //return false;
   return true;
@@ -393,7 +436,6 @@ void loop2(void *not_used)
 	while(1)
 	{
 		delay(300);
-		display.display();
 	}
 }
 
@@ -456,7 +498,7 @@ void setup()
 	display.clear();
 	display.setTextAlignment(TEXT_ALIGN_LEFT);
 
-	xprintf(0, "START");
+	xprintf(0, "MARK_START");
 	display.display();
 	delay(3000);
 	
