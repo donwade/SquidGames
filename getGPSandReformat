@@ -1,6 +1,7 @@
 #!/bin/bash
 reset
 FILE=red-lights.txt
+OUTPUT=./RedLightGreenLight/GPS_locs.h
 
 if [ "$1" == "" ]; then 
     echo "param 1 : need source text file of intersections"
@@ -17,6 +18,7 @@ if [ "$2" == "--xls" ]; then
 fi
 
 if [ "$2" == "--cpp" ]; then
+    echo "LOCATIONS = {" tee $OUTPUT
     FORMAT='cpp'
 fi
 
@@ -62,7 +64,7 @@ while read LINE; do
         CYAN "RHS=$POINT1_RHS"
         YELLOW "ADJ=$ADJ"
 
-        ./intersection2GPS "$POINT1_LHS" "$POINT1_RHS" $FORMAT
+        ./intersection2GPS "$POINT1_LHS" "$POINT1_RHS" $FORMAT | tee -a $OUTPUT
    
     else
         # string contained the word "between"
@@ -77,11 +79,17 @@ while read LINE; do
         CYAN "LHS=$POINT1_LHS"
         CYAN "RHS=$POINT1_RHS"
  
-        ./intersection2GPS "$COMMON_POINT" "$POINT1_LHS" $FORMAT
-        ./intersection2GPS "$COMMON_POINT" "$POINT1_RHS" $FORMAT
+        ./intersection2GPS "$COMMON_POINT" "$POINT1_LHS" $FORMAT | tee -a $OUTPUT
+        ./intersection2GPS "$COMMON_POINT" "$POINT1_RHS" $FORMAT | tee -a $OUTPUT
     fi
 
     echo 
 
 done < $FILE
 
+if [ "$2" == "--cpp" ]; then
+    echo "};" |  tee -a $OUTPUT
+    FORMAT='cpp'
+fi
+
+cat $OUTPUT

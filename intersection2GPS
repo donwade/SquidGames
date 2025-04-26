@@ -87,7 +87,5 @@ else
 
     shopt -o noglob |  wget -o test.txt -O $TEMP $CMD
     find_intersection
-    YELLOW "INTERSECTION REQUEST %s\n"  "$CMD"
-    CYAN "=============================================="
 fi
 
