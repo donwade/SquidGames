@@ -37,6 +37,10 @@ https://github.com/mikalhart/TinyGPSPlus
 typedef struct gpsLocation { double lng; double lat; };
 gpsLocation instant;
 
+gpsLocation snapshotAvg;
+bool bActionGPIO38	= false;
+
+
 #define GPS_SAMPLE_SIZE 6
 gpsLocation samples [ GPS_SAMPLE_SIZE ];
 uint8_t sIndex;
@@ -65,7 +69,6 @@ void getOldestSample(gpsLocation *result)
 {
 	result->lat = samples[sIndex].lat;
 	result->lng = samples[sIndex].lng;
-	Serial.printf("OLDEST xxx=%d" , sIndex);
 }
 
 //------------------------------------------------------------------
@@ -85,51 +88,45 @@ void getGPSavg(gpsLocation *result)
 }
 
 //------------------------------------------------------------------
-struct Button {
-    const uint8_t pinNum;
-    uint32_t numberKeyPresses;
-    bool pushed;
-};
+// Theres only one USR button on the T-beam .
 
-Button usrButton = {38, 0, false};
+#define GPIO_BUTTON 38
 
-//variables to keep track of the timing of recent interrupts
 
-void IRAM_ATTR buttonISR() 
+void IRAM_ATTR snapShotISR() 
 {
-	static unsigned long now = 0;	
-	static unsigned long last_button_time = 0; 
-	
+	unsigned long now = 0;	
+	static unsigned long lastTimeCalled = 0; 
+
     now = millis();
-	usrButton.pushed = digitalRead(usrButton.pinNum);
-	
-	/*if (now - last_button_time > 250)
+
+	// if last down time is < 250mS its a bounce of earlier event
+	// just ignore and reset the counter.
+
+	if (now - lastTimeCalled < 250) 
 	{
-		usrButton.numberKeyPresses++;
-		usrButton.pressed = Up;
-		last_button_time = now;
+		lastTimeCalled = now;
+		return;
 	}
-	*/
+
+	// no activity in the last 250ms, must be a new event.
+	
+	if (! bActionGPIO38)
+	{
+		getGPSavg(&snapshotAvg);
+		bActionGPIO38  = true;
+	}
+    Serial.printf("* %+9.6f %+9.6f %s\n\r\n\r", snapshotAvg.lat, snapshotAvg.lng, __FUNCTION__);
 }
+
 //----------------------------
+
 void setupButton() 
 {
-    pinMode(usrButton.pinNum, INPUT_PULLUP);
-    attachInterrupt(usrButton.pinNum, buttonISR, CHANGE);
+    pinMode(GPIO_BUTTON, INPUT_PULLUP);
+    attachInterrupt(GPIO_BUTTON, snapShotISR, FALLING);
 }
-//----------------------------
-bool bButtonDown() {
-	static bool buttonState = true;
 
-	bool now = usrButton.pushed;
-	
-	if ( now != buttonState)
-	{
-		Serial.printf("button is %d\n", now);
-	}
-	buttonState = now;
-	return now;
-}
 
 //------------------------------------------------------------------
 
@@ -194,12 +191,10 @@ static const char *veh_cardinal;
 
 void stateDisplay(void)
 {
-	gpsLocation slowAvg;
 	int dist;
 	int course;
 	const char *dir;
 
-	getGPSavg(&slowAvg);
 	
 	switch (absState)
 	{
@@ -221,12 +216,13 @@ void stateDisplay(void)
 
 			display.display();
 
-			if (digitalRead(usrButton.pinNum) == false)
+			if (bActionGPIO38)
 			{
-				startLocation = slowAvg;
+				startLocation = snapshotAvg;
+				bActionGPIO38 = false;
 				absState = MARK_END;
-				delay(1000);
 			}
+			
 		break;
 
 		case MARK_END:
@@ -241,11 +237,11 @@ void stateDisplay(void)
 			xprintf(3, "END PIN?");
 			display.display();
 
-			if (digitalRead(usrButton.pinNum) == false)
+			if (bActionGPIO38)
 			{
-				endLocation = slowAvg;
+				endLocation = snapshotAvg;
+				bActionGPIO38 = false;
 				absState = FLEEING;
-				delay(500);
 			}
 			
 		break;
@@ -262,11 +258,12 @@ void stateDisplay(void)
 			xprintf(3, "LEAVING");
 			display.display();
 
-			if (digitalRead(usrButton.pinNum) == false)
+			if (bActionGPIO38)
 			{
+				bActionGPIO38 = false;
 				absState = CLOSING;
-				delay(250);
 			}
+
 		break;
 
 		case CLOSING:
@@ -281,10 +278,10 @@ void stateDisplay(void)
 			xprintf(3, "APPROACHING");
 			display.display();
 
-			if (digitalRead(usrButton.pinNum) == false)
+			if (bActionGPIO38)
 			{
+				bActionGPIO38 = false;
 				absState = FLEEING;
-				delay(250);
 			}
 
 	}
@@ -299,35 +296,38 @@ void loop1(void *not_used)
 		instant.lat = gps.location.lat();
 		instant.lng = gps.location.lng();
 
-		samples[sIndex].lat = instant.lat;
-		samples[sIndex].lng = instant.lng;
+		{
+			// update rolling history
+			noInterrupts();
 
-		// sIndex is left pointing to NEXT position to write to.
-		// therefore sIndex points to oldest entry until written.
-		if (++sIndex == GPS_SAMPLE_SIZE) sIndex = 0;
-	
+			samples[sIndex].lat = instant.lat;
+			samples[sIndex].lng = instant.lng;
 
-		// get direction onlyif going fast enough
+			// sIndex is left pointing to NEXT position to write to on the next pass
+			// therefore sIndex points to oldest entry by time
+
+			if (++sIndex == GPS_SAMPLE_SIZE) sIndex = 0;
+			interrupts();
+		}	
+
+		// get direction only if going fast enough
 		// otherwise it points all over the place
+		
 		if (gps.speed.kmph() > MIN_SPEED_KPH )
 		{
-			gpsLocation old;
-			getOldestSample(&old);
-			veh_course = (int)gps.courseTo(old.lat, old.lng, instant.lat, instant.lng );
+			gpsLocation oldest;
+			getOldestSample(&oldest);
+			veh_course = (int)gps.courseTo(oldest.lat, oldest.lng, instant.lat, instant.lng );
 			veh_cardinal = gps.cardinal(veh_course);
 		}
 
 		
-		Serial.print("Latitude  : ");
-		Serial.println(gps.location.lat(), 5);
+		Serial.printf("  %+9.6f %+9.6f %2d:%02d:%02d\n\r", 
+				instant.lat, instant.lng, 
+				gps.time.hour(),gps.time.minute(),gps.time.second());
 
-
-		Serial.print("Longitude : ");
-		Serial.println(gps.location.lng(), 4);
-
-		//absolute_display();
 		stateDisplay();
-
+#if 0
 		Serial.print("Satellites: ");
 		Serial.println(gps.satellites.value());
 		Serial.print("Altitude  : ");
@@ -345,7 +345,7 @@ void loop1(void *not_used)
 		Serial.print("Speed     : ");
 		Serial.println(gps.speed.kmph()); 
 		Serial.println("**********************");
-
+#endif
 
 		smartDelay(1000);
 
