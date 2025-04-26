@@ -1,4 +1,7 @@
 #!/bin/bash
+
+# given an pair of streets find the gps.
+
 # https://developers.google.com/maps/documentation/geocoding/requests-geocoding?_gl=1*1aexkso*_up*MQ..*_ga*MTM0MjQ3MjYxNy4xNzQ0NjY4NzQ3*_ga_NRWSTWS78N*MTc0NDY2ODc0Ny4xLjEuMTc0NDY2OTAyMS4wLjAuMA..#geocoding-lookup
 # https://console.cloud.google.com/google/maps-apis/credentials?utm_source=Docs_CreateAPIKey&utm_content=Docs_geocoding-backend&invt=Abuxcg&project=adsb-plotting-1550952871500
 LHS_STREET="Eagleson Rd"
@@ -6,6 +9,8 @@ RHS_STREET="Hazeldean Rd"
 
 [ "$1" == "" ] || LHS_STREET="$1"
 [ "$2" == "" ] || RHS_STREET="$2"
+
+FORMAT=$3
 
 BASE_CITY='ottawa'
 BASE_PROVINCE='ON'
@@ -45,10 +50,14 @@ function find_intersection
 
     #echo -e "$_GREEN"
     #echo -e "$_RESET"
-    echo "${LAT}${LONG},\"$WHERE\""
 
-    #cat $TEMP
-    #echo " -------------- above is good (intersection tag found)"
+    if [ "$FORMAT" == "--xls" ];then
+        echo "${LAT}${LONG},\"$WHERE\" \n"
+    else
+        echo -e "\t{ ${LAT} ${LONG}, \"${LHS_STREET}\" , \"${RHS_STREET}\" },"
+
+    fi
+
     return 0
 }
 
@@ -78,7 +87,7 @@ else
 
     shopt -o noglob |  wget -o test.txt -O $TEMP $CMD
     find_intersection
-    echo "INTERSECTION REQUEST = $CMD"
-    echo "=============================================="
+    YELLOW "INTERSECTION REQUEST %s\n"  "$CMD"
+    CYAN "=============================================="
 fi
 

@@ -1,7 +1,29 @@
 #!/bin/bash
 reset
 FILE=red-lights.txt
-[ "$1" == "" ] || FILE="$1"
+
+if [ "$1" == "" ]; then 
+    echo "param 1 : need source text file of intersections"
+    exit
+fi
+
+if [ ! -f "$1" ]; then 
+    echo "param 1 : file $1 does not exit"
+    exit
+fi
+
+if [ "$2" == "--xls" ]; then
+    FORMAT='xls'
+fi
+
+if [ "$2" == "--cpp" ]; then
+    FORMAT='cpp'
+fi
+
+if [ "$FORMAT" == "" ]; then
+    echo "param 2 : { --xls | --cpp } output format"
+    exit
+fi
 
 
 while read LINE; do
@@ -40,7 +62,7 @@ while read LINE; do
         CYAN "RHS=$POINT1_RHS"
         YELLOW "ADJ=$ADJ"
 
-        ./intersection2GPS "$POINT1_LHS" "$POINT1_RHS"
+        ./intersection2GPS "$POINT1_LHS" "$POINT1_RHS" $FORMAT
    
     else
         # string contained the word "between"
@@ -55,13 +77,11 @@ while read LINE; do
         CYAN "LHS=$POINT1_LHS"
         CYAN "RHS=$POINT1_RHS"
  
-        ./intersection2GPS "$COMMON_POINT" "$POINT1_LHS"
-        ./intersection2GPS "$COMMON_POINT" "$POINT1_RHS"
+        ./intersection2GPS "$COMMON_POINT" "$POINT1_LHS" $FORMAT
+        ./intersection2GPS "$COMMON_POINT" "$POINT1_RHS" $FORMAT
     fi
 
-
-
-    echo "-------------------------------" >&2
+    echo 
 
 done < $FILE
 
