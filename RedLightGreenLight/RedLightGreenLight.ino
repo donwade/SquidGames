@@ -30,6 +30,8 @@ https://github.com/mikalhart/TinyGPSPlus
 #include <math.h> 
 
 #include <assert.h>
+#include "lookup.h"   //table of targets
+
 
 #define MIN_SPEED_KPH 9 // dont do compass if speed lower than this.
 //------------------------------------------------------------------
