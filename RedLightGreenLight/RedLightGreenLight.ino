@@ -32,6 +32,11 @@ https://github.com/mikalhart/TinyGPSPlus
 #include <assert.h>
 #include "lookup.h"   //table of targets
 
+#define BUILTIN_LED 4  // TIP t-beam
+
+extern void radioTxInit(void);
+extern void radioSendPacket(char *message); 
+
 
 #define MIN_SPEED_KPH 9 // dont do compass if speed lower than this.
 //------------------------------------------------------------------
@@ -43,7 +48,7 @@ gpsLocation snapshotAvg;
 bool bActionGPIO38	= false;
 
 
-#define GPS_SAMPLE_SIZE 6
+#define GPS_SAMPLE_SIZE 4
 gpsLocation samples [ GPS_SAMPLE_SIZE ];
 uint8_t sIndex;
 
@@ -57,7 +62,6 @@ char BT_SSID[17] = "== none ====";
 #define SS      18   // GPIO18 -- SX1278's CS
 #define RST     14   // GPIO14 -- SX1278's RESET
 #define DI0     26   // GPIO26 -- SX1278's IRQ(Interrupt Request)
-#define BAND    868E6
 
 SSD1306 display(0x3c, 21, 22);
 
@@ -181,7 +185,7 @@ void loop(){while(1) delay(-1);};  // keep arduino happy
 //---------------------------------------------------------
 
 //---------------------------------------------------------
-typedef enum absStates_e { MARK_START, MARK_END, FLEEING, CLOSING };
+typedef enum absStates_e { MARK_START, MARK_END, DEPARTING, ARRIVING };
 
 absStates_e absState = MARK_START;
 
@@ -189,7 +193,7 @@ gpsLocation startLocation;
 gpsLocation endLocation;
 
 static int veh_course;
-static const char *veh_cardinal;
+static const char *veh_cardinal = "???";
 
 void stateDisplay(void)
 {
@@ -222,7 +226,7 @@ void stateDisplay(void)
 			{
 				startLocation = snapshotAvg;
 				bActionGPIO38 = false;
-				absState = MARK_END;
+				absState = ARRIVING;
 			}
 			
 		break;
@@ -243,12 +247,12 @@ void stateDisplay(void)
 			{
 				endLocation = snapshotAvg;
 				bActionGPIO38 = false;
-				absState = FLEEING;
+				absState = DEPARTING;
 			}
 			
 		break;
 
-		case FLEEING:
+		case DEPARTING:
 			// course direction is view FROM camera moving AWAY.
 			dist = gps.distanceBetween(startLocation.lat, startLocation.lng, endLocation.lat, endLocation.lng);
 			course = (int)gps.courseTo(startLocation.lat, startLocation.lng, endLocation.lat, endLocation.lng);
@@ -263,12 +267,12 @@ void stateDisplay(void)
 			if (bActionGPIO38)
 			{
 				bActionGPIO38 = false;
-				absState = CLOSING;
+				absState = ARRIVING;
 			}
 
 		break;
 
-		case CLOSING:
+		case ARRIVING:
 			// course direction is view FROM distance going to CAMERA
 			dist = gps.distanceBetween(endLocation.lat, endLocation.lng, startLocation.lat, startLocation.lng );
 			course = (int)gps.courseTo(endLocation.lat, endLocation.lng, startLocation.lat, startLocation.lng );
@@ -283,20 +287,26 @@ void stateDisplay(void)
 			if (bActionGPIO38)
 			{
 				bActionGPIO38 = false;
-				absState = FLEEING;
+				absState = DEPARTING;
 			}
 
 	}
 	
 }
 //---------------------------------------------------------
+extern void radioSendPacket(char *message); 
 
 void loop1(void *not_used)
 {
+	char msg[30];
+	snprintf(msg, sizeof(msg),"hello"); 
+
 	while(1)
 	{
 		instant.lat = gps.location.lat();
 		instant.lng = gps.location.lng();
+
+		//radioSendPacket(msg); 
 
 		{
 			// update rolling history
@@ -455,10 +465,23 @@ static void smartDelay(unsigned long ms)
 }
 
 //---------------------------------------------------------
+extern void setupRadioTx(void);
 
+void setBlueLED(bool ON)
+{
+	axp.setChgLEDMode(ON ? AXP20X_LED_LOW_LEVEL : AXP20X_LED_OFF);
+}
+
+void setRedLED(bool ON)
+{
+	digitalWrite(BUILTIN_LED, ON ? 0 : 1);
+}
+
+//---------------------------------------------------------
 
 void setup()
 {
+
 	Serial.begin(115200);
 
 	setupButton();
@@ -472,17 +495,21 @@ void setup()
 	// gps power mgt
 	
 	Wire.begin(21, 22);
-	if (!axp.begin(Wire, AXP192_SLAVE_ADDRESS)) {
-	Serial.println("AXP192 Begin PASS");
-	} else {
-	Serial.println("AXP192 Begin FAIL");
+	if (!axp.begin(Wire, AXP192_SLAVE_ADDRESS)) 
+	{
+		Serial.println("AXP192 Begin PASS");
+	} 
+	else
+	{
+		Serial.println("AXP192 Begin FAIL");
 	}
 	
-	axp.setPowerOutPut(AXP192_LDO2, AXP202_ON);
-	axp.setPowerOutPut(AXP192_LDO3, AXP202_ON);
+	axp.setPowerOutPut(AXP192_LDO2, AXP202_ON);		//lora
+	axp.setPowerOutPut(AXP192_LDO3, AXP202_ON);		//gps
 	axp.setPowerOutPut(AXP192_DCDC2, AXP202_ON);
 	axp.setPowerOutPut(AXP192_EXTEN, AXP202_ON);
-	axp.setPowerOutPut(AXP192_DCDC1, AXP202_ON);
+	axp.setPowerOutPut(AXP192_DCDC1, AXP202_ON);	//oled
+
 	GPS.begin(9600, SERIAL_8N1, 34, 12);   //17-TX 18-RX
 
 #if 0	
@@ -497,16 +524,22 @@ void setup()
 	display.init();
 	display.flipScreenVertically();  
 	setFont(16);
+	
 	display.clear();
 	display.setTextAlignment(TEXT_ALIGN_LEFT);
 
+	radioTxInit();
+
 	xprintf(0, "MARK_START");
 	display.display();
-	delay(3000);
-	
+
+	pinMode(BUILTIN_LED, OUTPUT);
+	setRedLED(0);
+	setBlueLED(0);
 
 	xTaskCreatePinnedToCore(loop2, "loop2", 4096, NULL, 1, NULL, 1);
 	xTaskCreatePinnedToCore(loop1, "loop1", 4096, NULL, 1, NULL, 0);
+
 	 
 }
 

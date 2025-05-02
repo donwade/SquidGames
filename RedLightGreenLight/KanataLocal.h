@@ -21,3 +21,5 @@ GPS_ENTRY gpsLookup[] =
     { +00.0000000, -00.0000000 ,  -1     ,""          ,     "" }
 };
 
+#define  NUM_GPS_ENTRIES (sizeof(gpsLookup)/sizeof(gpsLookup[0]))
+
