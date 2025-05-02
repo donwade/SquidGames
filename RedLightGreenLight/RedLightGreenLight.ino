@@ -122,7 +122,8 @@ void IRAM_ATTR snapShotISR()
 		getGPSavg(&snapshotAvg);
 		bActionGPIO38  = true;
 	}
-    Serial.printf("* %+9.6f %+9.6f %s\n\r\n\r", snapshotAvg.lat, snapshotAvg.lng, __FUNCTION__);
+	
+    //Serial.printf("* %+9.6f %+9.6f %s\n\r\n\r", snapshotAvg.lat, snapshotAvg.lng, __FUNCTION__);
 }
 
 //----------------------------
@@ -185,7 +186,7 @@ void loop(){while(1) delay(-1);};  // keep arduino happy
 //---------------------------------------------------------
 
 //---------------------------------------------------------
-typedef enum absStates_e { MARK_START, MARK_END, DEPARTING, ARRIVING };
+typedef enum absStates_e { MARK_START, MARK_END, ARRIVED };
 
 absStates_e absState = MARK_START;
 
@@ -226,13 +227,15 @@ void stateDisplay(void)
 			{
 				startLocation = snapshotAvg;
 				bActionGPIO38 = false;
-				absState = ARRIVING;
+				absState = MARK_END;
+				setRedLED(true);
+				setBlueLED(false);
 			}
 			
 		break;
 
 		case MARK_END:
-			// course direction is view FROM camera moving AWAY.
+
 			dist = gps.distanceBetween(startLocation.lat, startLocation.lng, instant.lat, instant.lng);
 			course = (int)gps.courseTo(startLocation.lat, startLocation.lng, instant.lat, instant.lng);
 			dir = gps.cardinal(course);
@@ -245,34 +248,26 @@ void stateDisplay(void)
 
 			if (bActionGPIO38)
 			{
-				endLocation = snapshotAvg;
+				endLocation = instant;
 				bActionGPIO38 = false;
-				absState = DEPARTING;
+				absState = ARRIVED;
+
+				// immediately report to serial port 
+				// calc using approch logic
+				dist = gps.distanceBetween(endLocation.lat, endLocation.lng, startLocation.lat, startLocation.lng );
+				course = (int)gps.courseTo(endLocation.lat, endLocation.lng, startLocation.lat, startLocation.lng );
+				dir = gps.cardinal(course);
+
+				// throw out arrival, prep for C program
+				Serial.printf("   { %+9.7f, %+9.7f, %3d }, \n", endLocation.lat, endLocation.lng, course);
+
+				setRedLED(false);
+				setBlueLED(true);
 			}
 			
 		break;
 
-		case DEPARTING:
-			// course direction is view FROM camera moving AWAY.
-			dist = gps.distanceBetween(startLocation.lat, startLocation.lng, endLocation.lat, endLocation.lng);
-			course = (int)gps.courseTo(startLocation.lat, startLocation.lng, endLocation.lat, endLocation.lng);
-			dir = gps.cardinal(course);
-			
-			xprintf(0, "LA=%+9.7f", startLocation.lat);
-			xprintf(1, "LO=%+9.7f", startLocation.lng);
-			xprintf(2, "END=%d %s", course, dir);
-			xprintf(3, "LEAVING");
-			display.display();
-
-			if (bActionGPIO38)
-			{
-				bActionGPIO38 = false;
-				absState = ARRIVING;
-			}
-
-		break;
-
-		case ARRIVING:
+		case ARRIVED:	// arrived at camera.
 			// course direction is view FROM distance going to CAMERA
 			dist = gps.distanceBetween(endLocation.lat, endLocation.lng, startLocation.lat, startLocation.lng );
 			course = (int)gps.courseTo(endLocation.lat, endLocation.lng, startLocation.lat, startLocation.lng );
@@ -287,7 +282,10 @@ void stateDisplay(void)
 			if (bActionGPIO38)
 			{
 				bActionGPIO38 = false;
-				absState = DEPARTING;
+				absState = MARK_START;   // and do it again
+
+				setRedLED(false);
+				setBlueLED(false);
 			}
 
 	}
@@ -334,9 +332,10 @@ void loop1(void *not_used)
 		}
 
 		
-		Serial.printf("  %+9.6f %+9.6f %2d:%02d:%02d\n\r", 
-				instant.lat, instant.lng, 
-				gps.time.hour(),gps.time.minute(),gps.time.second());
+		Serial.printf("%2d:%02d:%02d @ %+9.6f %+9.6f \n\r", 
+				gps.time.hour(),gps.time.minute(),gps.time.second(),
+				instant.lat, instant.lng
+				);
 
 		stateDisplay();
 #if 0
