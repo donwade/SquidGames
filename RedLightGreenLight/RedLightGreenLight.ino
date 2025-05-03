@@ -44,7 +44,7 @@ extern void radioSendPacket(char *message);
 typedef struct gpsLocation { double lng; double lat; };
 gpsLocation instant;
 
-gpsLocation snapshotAvg;
+gpsLocation gpsAverage;
 bool bActionGPIO38	= false;
 
 
@@ -78,19 +78,21 @@ void getOldestSample(gpsLocation *result)
 }
 
 //------------------------------------------------------------------
-void getGPSavg(gpsLocation *result)
+void calcGPSaverage(void)
 {
-	//assert(result);
-	result->lat = 0.0;
-	result->lng = 0.0;
+	gpsLocation result;
+	
+	result.lat = 0.0;
+	result.lng = 0.0;
 	
 	for (int i= 0; i < GPS_SAMPLE_SIZE; i++)
 	{
-		result->lat += samples[i].lat;
-		result->lng += samples[i].lng;
+		result.lat += samples[i].lat;
+		result.lng += samples[i].lng;
 	}
-	result->lat /= float(GPS_SAMPLE_SIZE);
-	result->lng /= float(GPS_SAMPLE_SIZE);
+	result.lat /= float(GPS_SAMPLE_SIZE);
+	result.lng /= float(GPS_SAMPLE_SIZE);
+	gpsAverage = result;
 }
 
 //------------------------------------------------------------------
@@ -119,11 +121,10 @@ void IRAM_ATTR snapShotISR()
 	
 	if (! bActionGPIO38)
 	{
-		getGPSavg(&snapshotAvg);
 		bActionGPIO38  = true;
 	}
 	
-    //Serial.printf("* %+9.6f %+9.6f %s\n\r\n\r", snapshotAvg.lat, snapshotAvg.lng, __FUNCTION__);
+    //Serial.printf("* %+9.6f %+9.6f %s\n\r\n\r", gpsAverage.lat, gpsAverage.lng, __FUNCTION__);
 }
 
 //----------------------------
@@ -205,6 +206,7 @@ void stateDisplay(void)
 
 	toggleCount++;
 	
+	
 	switch (absState)
 	{
 		case MARK_START:
@@ -212,10 +214,10 @@ void stateDisplay(void)
 			// distance has no meaning as we have no start point
 			
 			
-			xprintf(0, "LA=%+9.7f", instant.lat);
-			xprintf(1, "LN=%+9.7f", instant.lng);
+			xprintf(0, "LA=%+9.7f", gpsAverage.lat);
+			xprintf(1, "LN=%+9.7f", gpsAverage.lng);
 
-			xprintf(3, "START PIN?");
+			xprintf(3, "MARK START");
 
 			if (gps.speed.kmph() > 5)
 				xprintf(2, "%3d %s", veh_course, veh_cardinal);
@@ -230,7 +232,7 @@ void stateDisplay(void)
 
 			if (bActionGPIO38)
 			{
-				startLocation = snapshotAvg;
+				startLocation = gpsAverage;
 				bActionGPIO38 = false;
 				absState = MARK_END;
 				Serial.println("");
@@ -240,14 +242,14 @@ void stateDisplay(void)
 
 		case MARK_END:
 
-			dist = gps.distanceBetween(startLocation.lat, startLocation.lng, instant.lat, instant.lng);
-			course = (int)gps.courseTo(startLocation.lat, startLocation.lng, instant.lat, instant.lng);
+			dist = gps.distanceBetween(startLocation.lat, startLocation.lng, gpsAverage.lat, gpsAverage.lng);
+			course = (int)gps.courseTo(startLocation.lat, startLocation.lng, gpsAverage.lat, gpsAverage.lng);
 			dir = gps.cardinal(course);
 			
-			xprintf(0, "LA=%+9.7f", instant.lat);
-			xprintf(1, "LO=%+9.7f", instant.lng);
+			xprintf(0, "LA=%+9.7f", gpsAverage.lat);
+			xprintf(1, "LO=%+9.7f", gpsAverage.lng);
 			xprintf(2, "END=%d %s", course, dir);
-			xprintf(3, "END PIN?");
+			xprintf(3, "MARK END!");
 			display.display();
 
 			setRedLED(toggleCount & 1);
@@ -256,7 +258,7 @@ void stateDisplay(void)
 
 			if (bActionGPIO38)
 			{
-				endLocation = instant;
+				endLocation = gpsAverage;
 				bActionGPIO38 = false;
 				absState = ARRIVED;
 
@@ -328,6 +330,8 @@ void loop1(void *not_used)
 			interrupts();
 		}	
 
+		calcGPSaverage();
+
 		// get direction only if going fast enough
 		// otherwise it points all over the place
 		
@@ -342,7 +346,7 @@ void loop1(void *not_used)
 		
 		Serial.printf("%2d:%02d:%02d @ %+9.6f %+9.6f \n\r", 
 				gps.time.hour(),gps.time.minute(),gps.time.second(),
-				instant.lat, instant.lng
+				gpsAverage.lat, gpsAverage.lng
 				);
 
 		stateDisplay();
@@ -537,12 +541,16 @@ void setup()
 
 	radioTxInit();
 
-	xprintf(0, "MARK_START");
+	xprintf(0, "BUILD");
+	xprintf(1, "%s" , __DATE__);
+	xprintf(2, "%s", __TIME__);
 	display.display();
 
 	pinMode(BUILTIN_LED, OUTPUT);
 	setRedLED(0);
 	setBlueLED(0);
+
+	delay(4000);
 
 	xTaskCreatePinnedToCore(loop2, "loop2", 4096, NULL, 1, NULL, 1);
 	xTaskCreatePinnedToCore(loop1, "loop1", 4096, NULL, 1, NULL, 0);
