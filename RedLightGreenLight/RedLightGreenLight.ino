@@ -201,7 +201,9 @@ void stateDisplay(void)
 	int dist;
 	int course;
 	const char *dir;
+	static uint8_t toggleCount = 0;
 
+	toggleCount++;
 	
 	switch (absState)
 	{
@@ -223,13 +225,15 @@ void stateDisplay(void)
 
 			display.display();
 
+			setRedLED(toggleCount & 1);
+			setBlueLED(!(toggleCount & 1));
+
 			if (bActionGPIO38)
 			{
 				startLocation = snapshotAvg;
 				bActionGPIO38 = false;
 				absState = MARK_END;
-				setRedLED(true);
-				setBlueLED(false);
+				Serial.println("");
 			}
 			
 		break;
@@ -246,6 +250,10 @@ void stateDisplay(void)
 			xprintf(3, "END PIN?");
 			display.display();
 
+			setRedLED(toggleCount & 1);
+			setBlueLED(false);
+
+
 			if (bActionGPIO38)
 			{
 				endLocation = instant;
@@ -259,10 +267,10 @@ void stateDisplay(void)
 				dir = gps.cardinal(course);
 
 				// throw out arrival, prep for C program
-				Serial.printf("   { %+9.7f, %+9.7f, %3d }, \n", endLocation.lat, endLocation.lng, course);
+				// fill in onStreet and crossStreet from google maps later
+				Serial.printf("   { %+9.7f, %+9.7f, %3d, %4s, \"onStreet\" , \"crossStreet\" }, \n"
+				, endLocation.lat, endLocation.lng, course, dir);
 
-				setRedLED(false);
-				setBlueLED(true);
 			}
 			
 		break;
@@ -279,13 +287,13 @@ void stateDisplay(void)
 			xprintf(3, "APPROACHING");
 			display.display();
 
+			setRedLED(false);
+			setBlueLED(toggleCount & 1);
+
 			if (bActionGPIO38)
 			{
 				bActionGPIO38 = false;
 				absState = MARK_START;   // and do it again
-
-				setRedLED(false);
-				setBlueLED(false);
 			}
 
 	}
