@@ -270,7 +270,9 @@ void stateDisplay(void)
 
 				// throw out arrival, prep for C program
 				// fill in onStreet and crossStreet from google maps later
-				Serial.printf("   { %+9.7f, %+9.7f, %3d, %4s, \"onStreet\" , \"crossStreet\" }, \n"
+				// formated nicely for cut/paste into google maps lat/long fmt
+				
+				Serial.printf("   { %+9.7f,%+9.7f , %3d, \"%3s\", \"onStreet\" , \"crossStreet\" }, \n"
 				, endLocation.lat, endLocation.lng, course, dir);
 
 			}
@@ -344,7 +346,7 @@ void loop1(void *not_used)
 		}
 
 		
-		Serial.printf("%2d:%02d:%02d @ %+9.6f %+9.6f \n\r", 
+		Serial.printf("%2d:%02d:%02d @ %+9.6f %+9.6f \n", 
 				gps.time.hour(),gps.time.minute(),gps.time.second(),
 				gpsAverage.lat, gpsAverage.lng
 				);
