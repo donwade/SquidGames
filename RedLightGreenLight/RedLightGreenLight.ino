@@ -179,12 +179,65 @@ int  xprintf(uint8_t lineNo, const char *format, ...)
 	va_end(args);
 	return 0;
 }
+//---------------------------------------------------------
+// return index to closest target.
+
+int firstChoiceIndex;
+int secondChoiceIndex;
+
+int findClosestCamera(float vehicleLat, float vehicleLng)
+{
+	int dist;
+	int course;
+	int i;
+	int closestDist = INT_MAX;
+	
+	const char *cardinal;
+
+	// do not do any GPS with 0.0 it will hang (hi GD).
+	if (vehicleLat < 1.0 ) return 0;
+	
+	Serial.println();
+	Serial.printf("lat=%9.7f lng=%9.7f \n", vehicleLat, vehicleLng);
+	
+	for (i = 0; i <  NUM_GPS_ENTRIES; i++)
+	{
+		//Serial.printf("%+9.7f  %+9.7f\n",  cameraLocations[i].lat, cameraLocations[i].lng);
+		//course = (int)gps.courseTo(vehicleLat, vehicleLng, cameraLocations[i].lat, cameraLocations[i].lng);
+		//cardinal = gps.cardinal(course);
+
+		dist = (int) gps.distanceBetween(vehicleLat, vehicleLng, cameraLocations[i].lat, cameraLocations[i].lng);
+
+		if ( dist < closestDist )
+		{
+			secondChoiceIndex = firstChoiceIndex;
+			closestDist = dist;
+			firstChoiceIndex = i;
+		}
+
+	}
+
+	for (i = 0; i <  NUM_GPS_ENTRIES; i++)
+	{
+		dist = (int)gps.distanceBetween(vehicleLat, vehicleLng, cameraLocations[i].lat, cameraLocations[i].lng);
+		course = (int)gps.courseTo(vehicleLat, vehicleLng, cameraLocations[i].lat, cameraLocations[i].lng);
+		cardinal = gps.cardinal(course);
+		
+		char star;
+
+		star = (i == firstChoiceIndex) ? '1' : ' ';
+		if ( star != '1' ) star = (i == secondChoiceIndex) ? '2' : ' ';
+		
+		Serial.printf("%c [%2d] dist=%4d course=%3d cardinal=%s\n",
+			star, i,  dist, course, cardinal);
+		
+	}
+	delay(10);  // or race condition happens
+}
 
 //---------------------------------------------------------
 
 void loop(){while(1) delay(-1);};  // keep arduino happy
-
-//---------------------------------------------------------
 
 //---------------------------------------------------------
 typedef enum absStates_e { MARK_START, MARK_END, ARRIVED };
@@ -202,11 +255,11 @@ void stateDisplay(void)
 	int dist;
 	int course;
 	const char *dir;
+	
+#ifdef DATA_CAPTURE	
 	static uint8_t toggleCount = 0;
 
 	toggleCount++;
-	
-	
 	switch (absState)
 	{
 		case MARK_START:
@@ -301,7 +354,29 @@ void stateDisplay(void)
 			}
 
 	}
-	
+#else
+
+	{
+		int dist, course;
+		const char *cardinal;
+		
+		findClosestCamera(gpsAverage.lat, gpsAverage.lng);
+		
+		
+		course = (int)gps.courseTo(gpsAverage.lat, gpsAverage.lng, cameraLocations[firstChoiceIndex].lat, cameraLocations[firstChoiceIndex].lng);
+		cardinal = gps.cardinal(course);
+
+		dist = (int) gps.distanceBetween(gpsAverage.lat, gpsAverage.lng, cameraLocations[firstChoiceIndex].lat, cameraLocations[firstChoiceIndex].lng);
+		display.display();
+
+		
+		xprintf(0, "%s", cameraLocations[firstChoiceIndex].onStreet);
+		xprintf(1, "%s", cameraLocations[firstChoiceIndex].crossStreet);
+		xprintf(2, "%3d %3d %s", dist, course, cardinal);
+		
+	}	
+
+#endif
 }
 //---------------------------------------------------------
 extern void radioSendPacket(char *message); 
@@ -352,28 +427,9 @@ void loop1(void *not_used)
 				);
 
 		stateDisplay();
-#if 0
-		Serial.print("Satellites: ");
-		Serial.println(gps.satellites.value());
-		Serial.print("Altitude  : ");
-		Serial.print(gps.altitude.feet() / 3.2808);
-		Serial.println("M");
-
-		Serial.print("Time      : ");
-		Serial.print(gps.time.hour());
-		Serial.print(":");
-		Serial.print(gps.time.minute());
-		Serial.print(":");
-		Serial.println(gps.time.second());
-
-
-		Serial.print("Speed     : ");
-		Serial.println(gps.speed.kmph()); 
-		Serial.println("**********************");
-#endif
 
 		smartDelay(1000);
-
+		
 		if (millis() > 5000 && gps.charsProcessed() < 10)
 		Serial.println(F("No GPS data received: check wiring"));
 	}
