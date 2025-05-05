@@ -18,6 +18,7 @@ https://github.com/mikalhart/TinyGPSPlus
 // https://github.com/pschatzmann/ESP32-A2DP.git
 // https://github.com/pschatzmann/arduino-audio-tools.git
 
+
 #include <TinyGPS++.h>
 #include <axp20x.h>
 
@@ -123,8 +124,6 @@ void IRAM_ATTR snapShotISR()
 	{
 		bActionGPIO38  = true;
 	}
-	
-    //Serial.printf("* %+9.6f %+9.6f %s\n\r\n\r", gpsAverage.lat, gpsAverage.lng, __FUNCTION__);
 }
 
 //----------------------------
@@ -179,6 +178,51 @@ int  xprintf(uint8_t lineNo, const char *format, ...)
 	va_end(args);
 	return 0;
 }
+
+//---------------------------------------------------------
+
+int  oprintf(uint8_t lineNo, const char *format, ...) 
+{
+	va_list args;
+	va_start(args, format);
+	char buffer[30];
+	vsnprintf(buffer, sizeof(buffer)-1, format, args);
+
+	// erase past background to black
+	display.setColor(BLACK);
+	display.fillRect(0, lineNo * char_height, display.getWidth(), char_height);
+	
+	display.setColor(WHITE);
+	display.drawRect(0, (lineNo * char_height)+1 , display.getWidth(), char_height );
+	
+	display.drawString(0, lineNo * char_height, buffer);
+	
+	va_end(args);
+	return 0;
+}
+
+
+//---------------------------------------------------------
+// inverted printf  (black text on white background)
+
+int  iprintf(uint8_t lineNo, const char *format, ...) 
+{
+	va_list args;
+	va_start(args, format);
+	char buffer[30];
+	vsnprintf(buffer, sizeof(buffer)-1, format, args);
+
+	// erase past background to WHITE
+	display.setColor(WHITE);
+	display.fillRect(0, lineNo * char_height, display.getWidth(), char_height);
+	display.setColor(BLACK);
+	
+	display.drawString(0, lineNo * char_height, buffer);
+	
+	va_end(args);
+	return 0;
+}
+
 //---------------------------------------------------------
 // return index to closest target.
 
@@ -191,14 +235,11 @@ int findClosestCamera(float vehicleLat, float vehicleLng)
 	int course;
 	int i;
 	int closestDist = INT_MAX;
-	
+		
 	const char *cardinal;
-
+	
 	// do not do any GPS with 0.0 it will hang (hi GD).
 	if (vehicleLat < 1.0 ) return 0;
-	
-	Serial.println();
-	Serial.printf("lat=%9.7f lng=%9.7f \n", vehicleLat, vehicleLng);
 	
 	for (i = 0; i <  NUM_GPS_ENTRIES; i++)
 	{
@@ -216,7 +257,11 @@ int findClosestCamera(float vehicleLat, float vehicleLng)
 		}
 
 	}
-
+	
+#ifdef SHOW_DECISIONS 
+	Serial.println();
+	Serial.printf("lat=%9.7f lng=%9.7f \n", vehicleLat, vehicleLng);
+	
 	for (i = 0; i <  NUM_GPS_ENTRIES; i++)
 	{
 		dist = (int)gps.distanceBetween(vehicleLat, vehicleLng, cameraLocations[i].lat, cameraLocations[i].lng);
@@ -232,12 +277,13 @@ int findClosestCamera(float vehicleLat, float vehicleLng)
 			star, i,  dist, course, cardinal);
 		
 	}
-	delay(10);  // or race condition happens
+#endif
+	delay(10);	// or race condition happens
 }
 
 //---------------------------------------------------------
 
-void loop(){while(1) delay(-1);};  // keep arduino happy
+void loop(){while(1) delay(1000);};  // keep arduino happy
 
 //---------------------------------------------------------
 typedef enum absStates_e { MARK_START, MARK_END, ARRIVED };
@@ -360,20 +406,24 @@ void stateDisplay(void)
 		int dist, course;
 		const char *cardinal;
 		
-		findClosestCamera(gpsAverage.lat, gpsAverage.lng);
+		findClosestCamera(instant.lat, instant.lng);
 		
 		
-		course = (int)gps.courseTo(gpsAverage.lat, gpsAverage.lng, cameraLocations[firstChoiceIndex].lat, cameraLocations[firstChoiceIndex].lng);
+		course = (int)gps.courseTo(instant.lat, instant.lng, cameraLocations[firstChoiceIndex].lat, cameraLocations[firstChoiceIndex].lng);
 		cardinal = gps.cardinal(course);
 
-		dist = (int) gps.distanceBetween(gpsAverage.lat, gpsAverage.lng, cameraLocations[firstChoiceIndex].lat, cameraLocations[firstChoiceIndex].lng);
-		display.display();
-
+		dist = (int) gps.distanceBetween(instant.lat, instant.lng, cameraLocations[firstChoiceIndex].lat, cameraLocations[firstChoiceIndex].lng);
 		
 		xprintf(0, "%s", cameraLocations[firstChoiceIndex].onStreet);
-		xprintf(1, "%s", cameraLocations[firstChoiceIndex].crossStreet);
-		xprintf(2, "%3d %3d %s", dist, course, cardinal);
-		
+		xprintf(1, "%s",  cameraLocations[firstChoiceIndex].crossStreet);
+		xprintf(3, "%3d kph %3s %3d", (int)gps.speed.kmph(), veh_cardinal, (int)gps.hdop.hdop());
+
+		if (dist > 100)
+			xprintf(2, "%3d m %3d %s", dist, course, cardinal);
+		else
+			oprintf(2, "%3d m %3d %s", dist, course, cardinal);
+
+		display.display();
 	}	
 
 #endif
@@ -384,7 +434,13 @@ extern void radioSendPacket(char *message);
 void loop1(void *not_used)
 {
 	char msg[30];
+	unsigned long startProfileTime;
+	unsigned long difftime;
+	
 	snprintf(msg, sizeof(msg),"hello"); 
+
+	static unsigned long lastProfileTime; 
+
 
 	while(1)
 	{
@@ -421,12 +477,19 @@ void loop1(void *not_used)
 		}
 
 		
-		Serial.printf("%2d:%02d:%02d @ %+9.6f %+9.6f \n", 
+		Serial.printf("%2d:%02d:%02d @ %+9.7f %+9.7f ^ %3d kph dir %3d %s\n", 
 				gps.time.hour(),gps.time.minute(),gps.time.second(),
-				gpsAverage.lat, gpsAverage.lng
+				instant.lat, instant.lng,
+				(int)gps.speed.kmph(), (int)gps.course.deg(), gps.cardinal(gps.course.deg())
 				);
 
+		// profile loop time. So far about 3ms total		
+		//difftime =  micros() - startProfileTime;
+		//Serial.printf("profile = %d uS\n", difftime);
+
 		stateDisplay();
+		
+		//startProfileTime = micros();
 
 		smartDelay(1000);
 		
@@ -436,6 +499,8 @@ void loop1(void *not_used)
 }
 
 
+//-----------------------------------------------------------
+// BLUETOOTH
 
 #define left_freq  13.
 #define right_freq 40.
@@ -508,7 +573,6 @@ bool isValid(const char* btSSID, esp_bd_addr_t address, int rssi){
   //return false;
   return true;
 }
-
 
 //---------------------------------------------------------
 
@@ -609,9 +673,13 @@ void setup()
 	setBlueLED(0);
 
 	delay(4000);
+	
+	TaskHandle_t foo;
+	xTaskCreate(loop1, "loop1", 4096, NULL, 5, &foo);
 
-	xTaskCreatePinnedToCore(loop2, "loop2", 4096, NULL, 1, NULL, 1);
-	xTaskCreatePinnedToCore(loop1, "loop1", 4096, NULL, 1, NULL, 0);
+	//xTaskCreatePinnedToCore(loop1, "loop1", 4096, NULL, 1, NULL, 0);
+
+	//xTaskCreatePinnedToCore(loop2, "loop2", 4096, NULL, 1, NULL, 1);
 
 	 
 }
