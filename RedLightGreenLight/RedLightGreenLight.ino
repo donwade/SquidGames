@@ -416,7 +416,29 @@ void stateDisplay(void)
 		
 		xprintf(0, "%s", cameraLocations[firstChoiceIndex].onStreet);
 		xprintf(1, "%s",  cameraLocations[firstChoiceIndex].crossStreet);
-		xprintf(3, "%3d kph %3s %3d", (int)gps.speed.kmph(), veh_cardinal, (int)gps.hdop.hdop());
+
+/*
+		What is HDOP 
+		< 1 Ideal
+
+		1-2 Excellent
+		Highest possible confidence level to be used for applications demanding the highest possible precision at all times.
+		At this confidence level, positional measurements are considered accurate enough to meet all but the most sensitive applications.
+
+		2-5 Good
+
+		Represents a level that marks the minimum appropriate for making accurate decisions. Positional measurements could be used to make reliable in-route navigation suggestions to the user.
+		Positional measurements could be used for calculations, but the fix quality could still be improved. A more open view of the sky is
+
+		5-10 Moderate
+
+		10-20 Fair
+		Represents a low confidence level. Positional measurements should be discarded or used only to indicate a very rough estimate
+
+		>20 Poor At this level, measurements should be discarded
+*/
+
+		xprintf(3, "%3d kph %3s %3.1f", (int)gps.speed.kmph(), veh_cardinal, gps.hdop.hdop());
 
 		if (dist > 100)
 			xprintf(2, "%3d m %3d %s", dist, course, cardinal);
