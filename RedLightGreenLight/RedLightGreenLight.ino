@@ -22,6 +22,10 @@ https://github.com/mikalhart/TinyGPSPlus
 #include <TinyGPS++.h>
 #include <axp20x.h>
 
+#include <iostream>
+#include <cstring>
+#include <string>
+
 
 #include <SPI.h>
 #include <Wire.h>  
@@ -35,6 +39,10 @@ https://github.com/mikalhart/TinyGPSPlus
 
 #define BUILTIN_LED 4  // TIP t-beam
 
+TinyGPSPlus gps;
+HardwareSerial GPS(1);
+AXP20X_Class axp;
+
 extern void radioTxInit(void);
 extern void radioSendPacket(char *message); 
 
@@ -43,7 +51,78 @@ extern void radioSendPacket(char *message);
 //------------------------------------------------------------------
 
 typedef struct gpsLocation { double lng; double lat; };
-gpsLocation instant;
+
+typedef struct gpsMisc 
+{
+	float speed;
+	float cardinal;
+	float hdop;
+	float Kmph;
+	float deg;		//direction in float degrees
+	
+	uint8_t hour;
+	uint8_t minute;
+	uint8_t second;
+};
+
+	
+gpsLocation iLocation;
+gpsMisc     iMisc;
+
+//#define SIMULATOR
+
+void getData(void)
+{
+#ifdef SIMULATOR
+	String cppStr;
+	char *cstr;
+	char charo[100];
+	
+	while(Serial.available())
+	{
+		char notUsed[30];
+		
+		cppStr = Serial.readString();
+		Serial.println(cppStr);
+	
+		cstr = new char [cppStr.length()+1];
+		std::strcpy (cstr, cppStr.c_str());
+
+		//18:31:02 @ +45.2944592 -75.8636137 ^  14 kph dir 110 ESE
+									//18:31:02 @ +45.2944592 -75.8636137 ^  14 kph dir 110 ESE
+		
+		sscanf((char*) cstr, "%s %s %f %f", 
+							 &notUsed, &notUsed, 
+							 &iLocation.lat, &iLocation.lng, 
+							 &notUsed,
+							 &);
+		Serial.println(cstr);
+		Serial.println(charo);
+		
+		if (cstr) delete [] cstr;
+	
+	}
+	
+#else
+
+	smartDelay(1000);
+
+	iLocation.lat = gps.location.lat();
+	iLocation.lng = gps.location.lng();
+	iMisc.hour = gps.time.hour();
+	iMisc.minute = gps.time.minute();
+	iMisc.second = gps.time.second();
+	iMisc.Kmph = gps.speed.kmph();
+	iMisc.hdop = gps.hdop.hdop();
+	iMisc.deg = gps.course.deg();
+
+	
+	if (millis() > 5000 && gps.charsProcessed() < 10)
+	Serial.println(F("No GPS data received: check wiring"));
+
+#endif
+}
+
 
 gpsLocation gpsAverage;
 bool bActionGPIO38	= false;
@@ -67,9 +146,6 @@ char BT_SSID[17] = "== none ====";
 SSD1306 display(0x3c, 21, 22);
 
 
-TinyGPSPlus gps;
-HardwareSerial GPS(1);
-AXP20X_Class axp;
 
 //------------------------------------------------------------------
 void getOldestSample(gpsLocation *result)
@@ -318,11 +394,11 @@ void stateDisplay(void)
 
 			xprintf(3, "MARK START");
 
-			if (gps.speed.kmph() > 5)
+			if (iMisc.Kmph() > 5)
 				xprintf(2, "%3d %s", veh_course, veh_cardinal);
 			else
-				xprintf(2, "%2d/%2d/%4d S=%2d", gps.date.day(), gps.date.month(), 
-						gps.date.year(), gps.satellites.value());
+				xprintf(2, "%2d/%2d/%4d S=%2d", gpX.date.day(), gpX.date.month(), 
+						gpX.date.year(), gpX.satellites.value());
 
 			display.display();
 
@@ -341,7 +417,7 @@ void stateDisplay(void)
 
 		case MARK_END:
 
-			dist = gps.distanceBetween(startLocation.lat, startLocation.lng, gpsAverage.lat, gpsAverage.lng);
+			dist = gpX.distanceBetween(startLocation.lat, startLocation.lng, gpsAverage.lat, gpsAverage.lng);
 			course = (int)gps.courseTo(startLocation.lat, startLocation.lng, gpsAverage.lat, gpsAverage.lng);
 			dir = gps.cardinal(course);
 			
@@ -406,13 +482,13 @@ void stateDisplay(void)
 		int dist, course;
 		const char *cardinal;
 		
-		findClosestCamera(instant.lat, instant.lng);
+		findClosestCamera(iLocation.lat, iLocation.lng);
 		
 		
-		course = (int)gps.courseTo(instant.lat, instant.lng, cameraLocations[firstChoiceIndex].lat, cameraLocations[firstChoiceIndex].lng);
+		course = (int)gps.courseTo(iLocation.lat, iLocation.lng, cameraLocations[firstChoiceIndex].lat, cameraLocations[firstChoiceIndex].lng);
 		cardinal = gps.cardinal(course);
 
-		dist = (int) gps.distanceBetween(instant.lat, instant.lng, cameraLocations[firstChoiceIndex].lat, cameraLocations[firstChoiceIndex].lng);
+		dist = (int) gps.distanceBetween(iLocation.lat, iLocation.lng, cameraLocations[firstChoiceIndex].lat, cameraLocations[firstChoiceIndex].lng);
 		
 		xprintf(0, "%s", cameraLocations[firstChoiceIndex].onStreet);
 		xprintf(1, "%s",  cameraLocations[firstChoiceIndex].crossStreet);
@@ -438,7 +514,7 @@ void stateDisplay(void)
 		>20 Poor At this level, measurements should be discarded
 */
 
-		xprintf(3, "%3d kph %3s %3.1f", (int)gps.speed.kmph(), veh_cardinal, gps.hdop.hdop());
+		xprintf(3, "%3d kph %3s %3.1f", (int)iMisc.Kmph, veh_cardinal, iMisc.hdop);
 
 		if (dist > 100)
 			xprintf(2, "%3d m %3d %s", dist, course, cardinal);
@@ -451,7 +527,7 @@ void stateDisplay(void)
 #endif
 }
 //---------------------------------------------------------
-extern void radioSendPacket(char *message); 
+extern void radioSendPacket(char *message);
 
 void loop1(void *not_used)
 {
@@ -463,20 +539,21 @@ void loop1(void *not_used)
 
 	static unsigned long lastProfileTime; 
 
+    Serial.setTimeout(1000);
 
+	
+
+	
 	while(1)
 	{
-		instant.lat = gps.location.lat();
-		instant.lng = gps.location.lng();
-
-		//radioSendPacket(msg); 
-
+		getData();
+		
 		{
 			// update rolling history
 			noInterrupts();
 
-			samples[sIndex].lat = instant.lat;
-			samples[sIndex].lng = instant.lng;
+			samples[sIndex].lat = iLocation.lat;
+			samples[sIndex].lng = iLocation.lng;
 
 			// sIndex is left pointing to NEXT position to write to on the next pass
 			// therefore sIndex points to oldest entry by time
@@ -490,19 +567,19 @@ void loop1(void *not_used)
 		// get direction only if going fast enough
 		// otherwise it points all over the place
 		
-		if (gps.speed.kmph() > MIN_SPEED_KPH )
+		if (iMisc.Kmph > MIN_SPEED_KPH )
 		{
 			gpsLocation oldest;
 			getOldestSample(&oldest);
-			veh_course = (int)gps.courseTo(oldest.lat, oldest.lng, instant.lat, instant.lng );
+			veh_course = (int)gps.courseTo(oldest.lat, oldest.lng, iLocation.lat, iLocation.lng );
 			veh_cardinal = gps.cardinal(veh_course);
 		}
 
 		
 		Serial.printf("%2d:%02d:%02d @ %+9.7f %+9.7f ^ %3d kph dir %3d %s\n", 
-				gps.time.hour(),gps.time.minute(),gps.time.second(),
-				instant.lat, instant.lng,
-				(int)gps.speed.kmph(), (int)gps.course.deg(), gps.cardinal(gps.course.deg())
+				iMisc.hour,iMisc.minute,iMisc.second,
+				iLocation.lat, iLocation.lng,
+				(int)iMisc.Kmph, (int)iMisc.deg, gps.cardinal(iMisc.deg)
 				);
 
 		// profile loop time. So far about 3ms total		
@@ -513,10 +590,7 @@ void loop1(void *not_used)
 		
 		//startProfileTime = micros();
 
-		smartDelay(1000);
 		
-		if (millis() > 5000 && gps.charsProcessed() < 10)
-		Serial.println(F("No GPS data received: check wiring"));
 	}
 }
 
