@@ -55,21 +55,22 @@ typedef struct gpsLocation { double lng; double lat; };
 typedef struct gpsMisc 
 {
 	float speed;
-	float cardinal;
+	const char *cardinal;
 	float hdop;
 	float Kmph;
-	float deg;		//direction in float degrees
+	float course;		//direction in float degrees
 	
 	uint8_t hour;
 	uint8_t minute;
 	uint8_t second;
 };
-
 	
 gpsLocation iLocation;
 gpsMisc     iMisc;
 
-//#define SIMULATOR
+//-----------------------------------------------------------------
+
+#define SIMULATOR
 
 void getData(void)
 {
@@ -77,32 +78,63 @@ void getData(void)
 	String cppStr;
 	char *cstr;
 	char charo[100];
-	
-	while(Serial.available())
-	{
-		char notUsed[30];
-		
-		cppStr = Serial.readString();
-		Serial.println(cppStr);
-	
-		cstr = new char [cppStr.length()+1];
-		std::strcpy (cstr, cppStr.c_str());
+	char notUsed[30];
+	char notUsed1[30];
+	char clat[20];
+	char clng[20];
+	char cSpeed[5];
+	char  cDeg[6];
 
-		//18:31:02 @ +45.2944592 -75.8636137 ^  14 kph dir 110 ESE
-									//18:31:02 @ +45.2944592 -75.8636137 ^  14 kph dir 110 ESE
-		
-		sscanf((char*) cstr, "%s %s %f %f", 
-							 &notUsed, &notUsed, 
-							 &iLocation.lat, &iLocation.lng, 
-							 &notUsed,
-							 &);
-		Serial.println(cstr);
-		Serial.println(charo);
-		
-		if (cstr) delete [] cstr;
 	
-	}
+	while(!Serial.available()) { delay(10);}
+
+	// or many lines get read
+	cppStr = Serial.readStringUntil('\n');  
+
+	// convert 'String' to C-String
+	cstr = new char [cppStr.length()+1];
+	std::strcpy (cstr, cppStr.c_str());
+
+	//18:31:02 @ +45.2944592 -75.8636137 ^  14 kph dir 110 ESE
+
+	// sscanf  %f not available on embedded systems without hard work 	
+
+	sscanf((char*) cstr, "%s %s %s %s %s %s %s %s %s %s\n", 
+						 &notUsed, &notUsed, 
+						 &clat, &clng, 
+						 &notUsed,
+						 &cSpeed,
+						 &notUsed,
+						 &notUsed1,
+						 &cDeg,
+						 &notUsed
+						 );
+
+
+	iLocation.lat = atof(clat);
+	iLocation.lng = atof(clng);
+
+	iMisc.Kmph = atof(cSpeed);
+	iMisc.course = atof( cDeg);
+	iMisc.cardinal = gps.cardinal(iMisc.course);
+
+	if (cstr) delete [] cstr;
+
+#if 0
+	Serial.printf("\n\n-------start-----\n");
+	Serial.println(cstr);
+	Serial.printf("lat=%10.7f \n", iLocation.lat);
+	Serial.printf("lng=%10.7f \n", iLocation.lng);
+
+	Serial.printf(" k/c/c %6.4f %6.4f %s\n", 
+			iMisc.Kmph, 
+			iMisc.course, 
+			iMisc.cardinal);
 	
+	Serial.println(cDeg);
+	Serial.printf("-------done-----\n");
+#endif
+
 #else
 
 	smartDelay(1000);
@@ -114,7 +146,7 @@ void getData(void)
 	iMisc.second = gps.time.second();
 	iMisc.Kmph = gps.speed.kmph();
 	iMisc.hdop = gps.hdop.hdop();
-	iMisc.deg = gps.course.deg();
+	iMisc.course = gps.course.deg();
 
 	
 	if (millis() > 5000 && gps.charsProcessed() < 10)
@@ -539,11 +571,6 @@ void loop1(void *not_used)
 
 	static unsigned long lastProfileTime; 
 
-    Serial.setTimeout(1000);
-
-	
-
-	
 	while(1)
 	{
 		getData();
@@ -579,7 +606,7 @@ void loop1(void *not_used)
 		Serial.printf("%2d:%02d:%02d @ %+9.7f %+9.7f ^ %3d kph dir %3d %s\n", 
 				iMisc.hour,iMisc.minute,iMisc.second,
 				iLocation.lat, iLocation.lng,
-				(int)iMisc.Kmph, (int)iMisc.deg, gps.cardinal(iMisc.deg)
+				(int)iMisc.Kmph, (int)iMisc.course, gps.cardinal(iMisc.course)
 				);
 
 		// profile loop time. So far about 3ms total		
