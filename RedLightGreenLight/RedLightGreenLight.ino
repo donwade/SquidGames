@@ -177,7 +177,58 @@ char BT_SSID[17] = "== none ====";
 
 SSD1306 display(0x3c, 21, 22);
 
+bool cardinalSin(int16_t windowCenter, uint8_t width, int16_t test)
+{
+	int16_t LHS, RHS, TEST;
+	bool bInside;
+	
+	// Serial.printf("center=%d, width=%d, test=%d\n", windowCenter, width, test);
+	
+	TEST = (test + 360) % 360;
+	windowCenter = (windowCenter + 360) % 360;
 
+	LHS = (windowCenter - width);
+	RHS = (windowCenter + width);
+	// Serial.printf("Window RAW   LHS=%3d < X < RHS=%3d\n", LHS, RHS);
+	
+	// convert any coord that went negative to all positive
+	LHS = ( LHS + 360) % 360;
+	RHS = ( RHS + 360) % 360;
+
+	// Serial.printf("Window RANGE LHS=%3d < X < RHS=%3d\n", LHS, RHS);
+
+	if ( LHS < RHS )
+	{
+		//classic no adj needed.
+	}
+	else
+	{
+		// the window straddles about the 0 point somewhere
+		// RHS will be low value, LHS hi value.
+		// Promote RHS into unmodulo 360
+		RHS += 360; 
+		
+		// Serial.printf("    RHS TWEAKED LHS=%3d < X < RHS=%3d\n", LHS, RHS);
+
+		// where does the test point sit on the straddle line?
+		// if the test sits in the wrapped area (0...low) then promote it
+		
+		if (TEST + 360 <= 360) // adjustment past the RHS is illegal
+		{	
+			TEST += 360;
+			// Serial.printf("    TEST TWEAKED LHS=%3d < X < RHS=%3d\n", LHS, RHS);
+		}
+	}
+
+	bInside = ( LHS <= TEST && TEST <= RHS );
+	
+	// Serial.printf("Window  TEST LHS=%3d < %3d < RHS=%3d\n", LHS, TEST, RHS);
+	// Serial.printf( "%d/%d you are %s", test, TEST, bInside ? "INSIDE" : "NOT INSIDE");
+	// Serial.println("\n");
+	
+	return bInside;
+	
+}
 
 //------------------------------------------------------------------
 void getOldestSample(gpsLocation *result)
@@ -796,6 +847,41 @@ void setup()
 	setBlueLED(0);
 
 	delay(4000);
+
+#if 0  // set cardinal view range
+	#define STEP 20
+	for (int x = 0; x < 360; x +=STEP)
+	{
+		Serial.println(cardinalSin(x, 20, x + 21));  // test for just outside RHS
+	}
+	Serial.println("---------");
+	
+	for (int x = 0; x < 360; x +=STEP)
+	{
+		Serial.println(cardinalSin(x, 20, x - 21));  // test for just outside LHS
+	}
+	Serial.println("---------");
+
+	for (int x = 0; x < 360; x +=STEP)
+	{
+		Serial.println(cardinalSin(x, 20, x - 19));  // test for just inside LHS
+	}
+	Serial.println("---------");
+
+	for (int x = 0; x < 360; x +=STEP)
+	{
+		Serial.println(cardinalSin(x, 20, x + 19));  // test for just inside RHS
+	}
+	Serial.println("---------");
+
+	for (int x = 0; x < 360; x +=STEP)
+	{
+		Serial.println(cardinalSin(x, 20, x + 20));  // test for on the line
+	}
+	Serial.println("---------");
+#endif
+
+
 	
 	TaskHandle_t foo;
 	xTaskCreate(loop1, "loop1", 4096, NULL, 5, &foo);
