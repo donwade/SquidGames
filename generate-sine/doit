@@ -1,0 +1,7 @@
+rm gen-sine
+gcc  -g0 gen-sine.c -o gen-sine -lm
+ls -al
+sleep 4
+./gen-sine
+
+
