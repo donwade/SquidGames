@@ -38,6 +38,10 @@ https://github.com/mikalhart/TinyGPSPlus
 #include "lookup.h"   //table of targets
 
 #define BUILTIN_LED 4  // TIP t-beam
+#define BT_enabled
+#define SIMULATOR_enabled
+
+
 
 TinyGPSPlus gps;
 HardwareSerial GPS(1);
@@ -70,11 +74,9 @@ gpsMisc     iMisc;
 
 //-----------------------------------------------------------------
 
-#define SIMULATOR
-
 void getData(void)
 {
-#ifdef SIMULATOR
+#ifdef SIMULATOR_enabled
 	String cppStr;
 	char *cstr;
 	char charo[100];
@@ -699,7 +701,8 @@ int32_t get_data_frames(Frame *frame, int32_t frame_count)
     // fill the channel data
     for (int sample = 0; sample < frame_count; ++sample) 
 	{
-#if 1
+	
+#if 0
 		int mod = tick_ctr / left_freq;
 		
 		if (mod & 1)
@@ -738,12 +741,11 @@ int32_t get_data_frames(Frame *frame, int32_t frame_count)
 // Return true to connect, false will continue scanning: You can can use this
 // callback to build a list.
 
-
 bool isValid(const char* btSSID, esp_bd_addr_t address, int rssi){
   static uint8_t hi = 0;
   hi++;
   snprintf(BT_SSID, sizeof(BT_SSID), "%s", btSSID);
-  Serial.printf("available SSID: %s %d\n", btSSID, hi);
+  Serial.printf("%3d) available SSID: %s %d\n", hi, btSSID, rssi);
   //return false;
   return true;
 }
@@ -785,6 +787,7 @@ void setRedLED(bool ON)
 }
 
 //---------------------------------------------------------
+extern void setup_sine (void);
 
 void setup()
 {
@@ -819,7 +822,7 @@ void setup()
 
 	GPS.begin(9600, SERIAL_8N1, 34, 12);   //17-TX 18-RX
 
-#if 0	
+#ifdef BT_enabled
 	// bluetooth init
 	a2dp_source.set_ssid_callback(isValid);
 	a2dp_source.set_auto_reconnect(false);
@@ -846,6 +849,7 @@ void setup()
 	setRedLED(0);
 	setBlueLED(0);
 
+	setup_sine();
 	delay(4000);
 
 #if 0  // set cardinal view range
