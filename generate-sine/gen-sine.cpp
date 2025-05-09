@@ -59,7 +59,6 @@ void setup_sine (void)
 
     for (int i = 0 ; i < QUARTER_SINE + 1; i++)
     {
-		//if (i == QUARTER_SINE) return;
         double degrees = ( (float) i / (float) QUARTER_SINE) * 90.0;
         amp = (double) PEAK_AMPLITUDE * sin(M_PI * degrees/180. );
         SINE_ARRAY[i] = (signed short) amp;
@@ -67,10 +66,15 @@ void setup_sine (void)
     }
 
 	printf("\n");
-    for (int i = 0; i < 361; i+=5)
+    for (int i = 0; i < 361; i+=1)
     {
         printf ("%3d %5d 0x%4X\n", i,(int) getSine(i), (int) getSine(i));
     }
-
-
 }
+
+int main (int c, char *argv[])
+{
+    setup_sine();
+    return 0;
+}
+
