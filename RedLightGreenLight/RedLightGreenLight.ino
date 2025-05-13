@@ -21,6 +21,7 @@ https://github.com/mikalhart/TinyGPSPlus
 
 #include <TinyGPS++.h>
 #include <axp20x.h>
+#include <esp_task_wdt.h> // Include the ESP32 Task Watchdog library
 
 #include <iostream>
 #include <cstring>
@@ -88,7 +89,8 @@ void getData(void)
 	char  cDeg[6];
 
 	
-	while(!Serial.available()) { delay(10);}
+	// if no on is stuffing in data from a file. Kick the dog
+	while(!Serial.available()) { esp_task_wdt_reset(); delay(10);}
 
 	// or many lines get read
 	cppStr = Serial.readStringUntil('\n');  
@@ -444,7 +446,10 @@ int findClosestCamera(float vehicleLat, float vehicleLng)
 
 //---------------------------------------------------------
 
-void loop(){while(1) delay(1000);};  // keep arduino happy
+void loop()
+{
+	vTaskDelete(NULL);
+}
 
 //---------------------------------------------------------
 typedef enum absStates_e { MARK_START, MARK_END, ARRIVED };
@@ -619,6 +624,8 @@ void loop1(void *not_used)
 	char msg[30];
 	unsigned long startProfileTime;
 	unsigned long difftime;
+
+	esp_task_wdt_add(NULL); //add current thread to WDT watch
 	
 	snprintf(msg, sizeof(msg),"hello"); 
 
@@ -626,6 +633,7 @@ void loop1(void *not_used)
 
 	while(1)
 	{
+	  	esp_task_wdt_reset();
 		getData();
 		
 		{
@@ -678,58 +686,61 @@ void loop1(void *not_used)
 //-----------------------------------------------------------
 // BLUETOOTH
 
-#define left_freq  13.
-#define right_freq 40.
+#define left_freq  3300.
+#define right_freq 1000.
 
 uint32_t callback_ctr =0;
 uint32_t tick_ctr = 0;
 
 BluetoothA2DPSource a2dp_source;
+extern signed short getSine(float degrees);
 
 // The supported audio codec in ESP32 A2DP is SBC. SBC audio stream is encoded
 // from PCM data normally formatted as 44.1kHz sampling rate, two-channel 16-bit sample data
 
 int32_t get_data_frames(Frame *frame, int32_t frame_count)
 {
+
     static float m_time = 0.0;
-    float m_amplitude = 20000.0;  // -32,768 to 32,767
     float m_tickPeriod = 1.0 / 44100.0;
     float m_phase = 0.0;
-    float pi_2 = PI * 2.0;
+    float pi_2 = TWO_PI;
 	callback_ctr++;
 	
     // fill the channel data
     for (int sample = 0; sample < frame_count; ++sample) 
 	{
 	
-#if 0
+#if 1
+		float m_amplitude = 5000.0;	// -32,768 to 32,767
 		int mod = tick_ctr / left_freq;
 		
 		if (mod & 1)
 		{
-			frame[sample].channel1 = m_amplitude;
+			frame[sample].channel1 = (m_amplitude);
 		}
 		else 
 		{
-			frame[sample].channel1 = -m_amplitude;
+			frame[sample].channel1 = -(m_amplitude);
 		}
 		
 		mod = tick_ctr / right_freq;
 		if (mod & 1)
 		{
-			frame[sample].channel2 = m_amplitude;
+			frame[sample].channel2 = (m_amplitude);
 		}
 		else 
 		{
-			frame[sample].channel2 = -m_amplitude;
+			frame[sample].channel2 = -(m_amplitude);
 		}
 		
 #else
         float left_angle = pi_2 * left_freq * m_time + m_phase;
-        frame[sample].channel1 = m_amplitude * sin(left_angle);
+        frame[sample].channel1 = htons(getSine(left_angle));
+		//Serial.printf("ssss deg=%9.3f val=%d \n", left_angle, frame[sample].channel1);
 
         float right_angle = pi_2 * right_freq * m_time + m_phase;
-        frame[sample].channel2 = m_amplitude * sin(right_angle);
+        frame[sample].channel2 = htons(getSine(right_angle));
 #endif	
 		tick_ctr++;
         m_time += m_tickPeriod;
@@ -737,6 +748,9 @@ int32_t get_data_frames(Frame *frame, int32_t frame_count)
 
     return frame_count;
 }
+
+
+//---------------------------------------------------------
 
 // Return true to connect, false will continue scanning: You can can use this
 // callback to build a list.
@@ -770,6 +784,7 @@ static void smartDelay(unsigned long ms)
     while (GPS.available())
       gps.encode(GPS.read());
 	  delay(100);		// stop hard loop allow multi tasking
+	  esp_task_wdt_reset();
   } while (millis() - start < ms);
 }
 
@@ -788,6 +803,14 @@ void setRedLED(bool ON)
 
 //---------------------------------------------------------
 extern void setup_sine (void);
+
+// Fixes complier error “invalid conversion from ‘int’ to ‘const esp_task_wdt_config_t*'”:
+esp_task_wdt_config_t twdt_config = 
+{
+    .timeout_ms = 10000,
+	//.idle_core_mask = (1 << configNUM_CORES) - 1,
+    .trigger_panic = true,
+};
 
 void setup()
 {
@@ -850,6 +873,21 @@ void setup()
 	setBlueLED(0);
 
 	setup_sine();
+
+	ESP_ERROR_CHECK(esp_task_wdt_reconfigure(&twdt_config));
+
+	esp_task_wdt_deinit(); //wdt is enabled by default, so we need to 'deinit' it first
+	
+	esp_task_wdt_init(&twdt_config); //enable panic so ESP32 restarts
+	
+
+	// Initialize the watchdog timer with a timeout of 10 seconds.  This is optional, but you can adjust it.
+  	esp_task_wdt_init(&twdt_config); 
+
+  	// Start the watchdog timer.  This is necessary for the watchdog to start counting.
+  	//esp_task_wdt_start();
+	
+
 	delay(4000);
 
 #if 0  // set cardinal view range
@@ -888,9 +926,9 @@ void setup()
 
 	
 	TaskHandle_t foo;
-	xTaskCreate(loop1, "loop1", 4096, NULL, 5, &foo);
+	//xTaskCreate(loop1, "loop1", 4096, NULL, 5, &foo);
 
-	//xTaskCreatePinnedToCore(loop1, "loop1", 4096, NULL, 1, NULL, 0);
+	xTaskCreatePinnedToCore(loop1, "FOAD", 4096, NULL, 1, NULL, 0);
 
 	//xTaskCreatePinnedToCore(loop2, "loop2", 4096, NULL, 1, NULL, 1);
 
