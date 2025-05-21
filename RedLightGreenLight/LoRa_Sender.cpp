@@ -1,4 +1,6 @@
 //from LilyGo T-beam examples
+#ifdef HAS_RADIO
+
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
@@ -87,4 +89,7 @@ void radioSendPacket(char *message)
   
   
 }
+#else
+void radioTxInit(void) {};
+#endif
 

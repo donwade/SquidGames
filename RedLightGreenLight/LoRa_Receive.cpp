@@ -1,5 +1,7 @@
+#ifdef HAS_RADIO
+
 #include <SPI.h>
-#include <LoRa.h>
+//#include <LoRa.h>
 #include <Wire.h>  
 #include "SSD1306.h" 
 
@@ -55,3 +57,4 @@ void rxLoop()
   delay(10);
 }
 
+#endif  // HAS_RADIO

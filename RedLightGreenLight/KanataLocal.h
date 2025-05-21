@@ -1,12 +1,12 @@
 
-typedef struct GPS_ENTRY 
+typedef struct  
 {        float lat; 
          float lng; 
          short bearing;
          const char *cardinal;
          const char *onStreet; 
          const char *crossStreet;
-};
+} GPS_ENTRY;
 
 const GPS_ENTRY cameraLocations[] = 
 {

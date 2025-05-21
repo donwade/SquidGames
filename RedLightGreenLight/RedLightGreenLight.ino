@@ -21,7 +21,7 @@ https://github.com/mikalhart/TinyGPSPlus
 
 #include <TinyGPS++.h>
 #include <axp20x.h>
-#include <esp_task_wdt.h> // Include the ESP32 Task Watchdog library
+//#include <esp_task_wdt.h> // Include the ESP32 Task Watchdog library
 
 #include <iostream>
 #include <cstring>
@@ -55,9 +55,9 @@ extern void radioSendPacket(char *message);
 #define MIN_SPEED_KPH 9 // dont do compass if speed lower than this.
 //------------------------------------------------------------------
 
-typedef struct gpsLocation { double lng; double lat; };
+typedef struct { double lng; double lat; } gpsLocation ;
 
-typedef struct gpsMisc 
+typedef struct  
 {
 	float speed;
 	const char *cardinal;
@@ -68,7 +68,7 @@ typedef struct gpsMisc
 	uint8_t hour;
 	uint8_t minute;
 	uint8_t second;
-};
+} gpsMisc;
 	
 gpsLocation iLocation;
 gpsMisc     iMisc;
@@ -392,13 +392,14 @@ int  iprintf(uint8_t lineNo, const char *format, ...)
 int firstChoiceIndex;
 int secondChoiceIndex;
 
-int findClosestCamera(float vehicleLat, float vehicleLng)
+bool findClosestCamera(float vehicleLat, float vehicleLng)
 {
 	int dist;
 	int course;
 	int i;
 	int closestDist = INT_MAX;
-		
+	bool found = false;
+
 	const char *cardinal;
 	
 	// do not do any GPS with 0.0 it will hang (hi GD).
@@ -417,6 +418,7 @@ int findClosestCamera(float vehicleLat, float vehicleLng)
 			secondChoiceIndex = firstChoiceIndex;
 			closestDist = dist;
 			firstChoiceIndex = i;
+			found = true;
 		}
 
 	}
@@ -442,6 +444,7 @@ int findClosestCamera(float vehicleLat, float vehicleLng)
 	}
 #endif
 	delay(10);	// or race condition happens
+	return found;
 }
 
 //---------------------------------------------------------
@@ -452,7 +455,7 @@ void loop()
 }
 
 //---------------------------------------------------------
-typedef enum absStates_e { MARK_START, MARK_END, ARRIVED };
+typedef enum { MARK_START, MARK_END, ARRIVED } absStates_e ;
 
 absStates_e absState = MARK_START;
 
@@ -804,13 +807,14 @@ void setRedLED(bool ON)
 //---------------------------------------------------------
 extern void setup_sine (void);
 
-// Fixes complier error “invalid conversion from ‘int’ to ‘const esp_task_wdt_config_t*'”:
+/* Fixes complier error invalid conversion from int to const esp_task_wdt_config_t*':
 esp_task_wdt_config_t twdt_config = 
 {
     .timeout_ms = 10000,
 	//.idle_core_mask = (1 << configNUM_CORES) - 1,
     .trigger_panic = true,
 };
+*/
 
 void setup()
 {
@@ -873,7 +877,7 @@ void setup()
 	setBlueLED(0);
 
 	setup_sine();
-
+/*
 	ESP_ERROR_CHECK(esp_task_wdt_reconfigure(&twdt_config));
 
 	esp_task_wdt_deinit(); //wdt is enabled by default, so we need to 'deinit' it first
@@ -886,7 +890,7 @@ void setup()
 
   	// Start the watchdog timer.  This is necessary for the watchdog to start counting.
   	//esp_task_wdt_start();
-	
+*/	
 
 	delay(4000);
 
