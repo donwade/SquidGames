@@ -1,345 +1,728 @@
-=~=~=~=~=~=~=~=~=~=~=~= PuTTY log 2025.05.13 15:31:36 =~=~=~=~=~=~=~=~=~=~=~=
-.W}failed: [259] ESP_ERR_INVALID_STATE
-E (1272) i2c.master: I2C hardware NACK detected
-E (1272) i2c.master: I2C transaction unexpected nack detected
-E (1272) i2c.master: s_i2c_synchronous_transaction(924): I2C transaction failed
-E (1278) i2c.master: i2c_master_multi_buffer_transmit(1186): I2C transaction failed
-[  1288][E][esp32-hal-i2c-ng.c:265] i2cWrite(): i2c_master_transmit failed: [259] ESP_ERR_INVALID_STATE
-E (1305) i2c.master: I2C hardware NACK detected
-E (1305) i2c.master: I2C transaction unexpected nack detected
-E (1305) i2c.master: s_i2c_synchronous_transaction(924): I2C transaction failed
-E (1311) i2c.master: i2c_master_multi_buffer_transmit(1186): I2C transaction failed
-[  1321][E][esp32-hal-i2c-ng.c:265] i2cWrite(): i2c_master_transmit failed: [259] ESP_ERR_INVALID_STATE
-E (1338) i2c.master: I2C hardware NACK detected
-E (1338) i2c.master: I2C transaction unexpected nack detected
-E (1338) i2c.master: s_i2c_synchronous_transaction(924): I2C transaction failed
-E (1344) i2c.master: i2c_master_multi_buffer_transmit(1186): I2C transaction failed
-[  1354][E][esp32-hal-i2c-ng.c:265] i2cWrite(): i2c_master_transmit failed: [259] ESP_ERR_INVALID_STATE
-E (1372) i2c.master: I2C hardware NACK detected
-E (1372) i2c.master: I2C transaction unexpected nack detected
-E (1372) i2c.master: s_i2c_synchronous_transaction(924): I2C transaction failed
-E (1377) i2c.master: i2c_master_multi_buffer_transmit(1186): I2C transaction failed
-[  1388][E][esp32-hal-i2c-ng.c:265] i2cWrite(): i2c_master_transmit failed: [259] ESP_ERR_INVALID_STATE
-E (1405) i2c.master: I2C hardware NACK detected
-E (1405) i2c.master: I2C transaction unexpected nack detected
-E (1405) i2c.master: s_i2c_synchronous_transaction(924): I2C transaction failed
-E (1410) i2c.master: i2c_master_multi_buffer_transmit(1186): I2C transaction failed
-[  1421][E][esp32-hal-i2c-ng.c:265] i2cWrite(): i2c_master_transmit failed: [259] ESP_ERR_INVALID_STATE
-E (1438) i2c.master: I2C hardware NACK detected
-E (1438) i2c.master: I2C transaction unexpected nack detected
-E (1438) i2c.master: s_i2c_synchronous_transaction(924): I2C transaction failed
-E (1444) i2c.master: i2c_master_multi_buffer_transmit(1186): I2C transaction failed
-[  1454][E][esp32-hal-i2c-ng.c:265] i2cWrite(): i2c_master_transmit failed: [259] ESP_ERR_INVALID_STATE
-E (1471) i2c.master: I2C hardware NACK detected
-E (1471) i2c.master: I2C transaction unexpected nack detected
-E (1471) i2c.master: s_i2c_synchronous_transaction(924): I2C transaction failed
-E (1477) i2c.master: i2c_master_multi_buffer_transmit(1186): I2C transaction failed
-[  1487][E][esp32-hal-i2c-ng.c:265] i2cWrite(): i2c_master_transmit failed: [259] ESP_ERR_INVALID_STATE
-E (1504) i2c.master: I2C hardware NACK detected
-E (1505) i2c.master: I2C transaction unexpected nack detected
-E (1505) i2c.master: s_i2c_synchronous_transaction(924): I2C transaction failed
-E (1510) i2c.master: i2c_master_multi_buffer_transmit(1186): I2C transaction failed
-[  1521][E][esp32-hal-i2c-ng.c:265] i2cWrite(): i2c_master_transmit failed: [259] ESP_ERR_INVALID_STATE
-E (1538) i2c.master: I2C hardware NACK detected
-E (1538) i2c.master: I2C transaction unexpected nack detected
-E (1538) i2c.master: s_i2c_synchronous_transaction(924): I2C transaction failed
-E (1543) i2c.master: i2c_master_multi_buffer_transmit(1186): I2C transaction failed
-[  1554][E][esp32-hal-i2c-ng.c:265] i2cWrite(): i2c_master_transmit failed: [259] ESP_ERR_INVALID_STATE
-E (1571) i2c.master: I2C hardware NACK detected
-E (1571) i2c.master: I2C transaction unexpected nack detected
-E (1571) i2c.master: s_i2c_synchronous_transaction(924): I2C transaction failed
-E (1577) i2c.master: i2c_master_multi_buffer_transmit(1186): I2C transaction failed
-[  1587][E][esp32-hal-i2c-ng.c:265] i2cWrite(): i2c_master_transmit failed: [259] ESP_ERR_INVALID_STATE
-E (1604) i2c.master: I2C hardware NACK detected
-E (1604) i2c.master: I2C transaction unexpected nack detected
-E (1604) i2c.master: s_i2c_synchronous_transaction(924): I2C transaction failed
-E (1610) i2c.master: i2c_master_multi_buffer_transmit(1186): I2C transaction failed
-[  1620][E][esp32-hal-i2c-ng.c:265] i2cWrite(): i2c_master_transmit failed: [259] ESP_ERR_INVALID_STATE
-E (1637) i2c.master: I2C hardware NACK detected
-E (1637) i2c.master: I2C transaction unexpected nack detected
-E (1637) i2c.master: s_i2c_synchronous_transaction(924): I2C transaction failed
-E (1643) i2c.master: i2c_master_multi_buffer_transmit(1186): I2C transaction failed
-[  1653][E][esp32-hal-i2c-ng.c:265] i2cWrite(): i2c_master_transmit failed: [259] ESP_ERR_INVALID_STATE
-E (1671) i2c.master: I2C hardware NACK detected
-E (1671) i2c.master: I2C transaction unexpected nack detected
-E (1671) i2c.master: s_i2c_synchronous_transaction(924): I2C transaction failed
-E (1676) i2c.master: i2c_master_multi_buffer_transmit(1186): I2C transaction failed
-[  1687][E][esp32-hal-i2c-ng.c:265] i2cWrite(): i2c_master_transmit failed: [259] ESP_ERR_INVALID_STATE
-E (1704) i2c.master: I2C hardware NACK detected
-E (1704) i2c.master: I2C transaction unexpected nack detected
-E (1704) i2c.master: s_i2c_synchronous_transaction(924): I2C transaction failed
-E (1709) i2c.master: i2c_master_multi_buffer_transmit(1186): I2C transaction failed
-[  1720][E][esp32-hal-i2c-ng.c:265] i2cWrite(): i2c_master_transmit failed: [259] ESP_ERR_INVALID_STATE
-E (1737) i2c.master: I2C hardware NACK detected
-E (1737) i2c.master: I2C transaction unexpected nack detected
-E (1737) i2c.master: s_i2c_synchronous_transaction(924): I2C transaction failed
-E (1743) i2c.master: i2c_master_multi_buffer_transmit(1186): I2C transaction failed
-[  1753][E][esp32-hal-i2c-ng.c:265] i2cWrite(): i2c_master_transmit failed: [259] ESP_ERR_INVALID_STATE
-E (1770) i2c.master: I2C hardware NACK detected
-E (1770) i2c.master: I2C transaction unexpected nack detected
-E (1770) i2c.master: s_i2c_synchronous_transaction(924): I2C transaction failed
-E (1776) i2c.master: i2c_master_multi_buffer_transmit(1186): I2C transaction failed
-[  1786][E][esp32-hal-i2c-ng.c:265] i2cWrite(): i2c_master_transmit failed: [259] ESP_ERR_INVALID_STATE
-E (1803) i2c.master: I2C hardware NACK detected
-E (1804) i2c.master: I2C transaction unexpected nack detected
-E (1804) i2c.master: s_i2c_synchronous_transaction(924): I2C transaction failed
-E (1809) i2c.master: i2c_master_multi_buffer_transmit(1186): I2C transaction failed
-[  1820][E][esp32-hal-i2c-ng.c:265] i2cWrite(): i2c_master_transmit failed: [259] ESP_ERR_INVALID_STATE
-E (1837) i2c.master: I2C hardware NACK detected
-E (1837) i2c.master: I2C transaction unexpected nack detected
-E (1837) i2c.master: s_i2c_synchronous_transaction(924): I2C transaction failed
-E (1842) i2c.master: i2c_master_multi_buffer_transmit(1186): I2C transaction failed
-[  1853][E][esp32-hal-i2c-ng.c:265] i2cWrite(): i2c_master_transmit failed: [259] ESP_ERR_INVALID_STATE
-E (1870) i2c.master: I2C hardware NACK detected
-E (1870) i2c.master: I2C transaction unexpected nack detected
-E (1870) i2c.master: s_i2c_synchronous_transaction(924): I2C transaction failed
-E (1876) i2c.master: i2c_master_multi_buffer_transmit(1186): I2C transaction failed
-[  1886][E][esp32-hal-i2c-ng.c:265] i2cWrite(): i2c_master_transmit failed: [259] ESP_ERR_INVALID_STATE
-E (1903) i2c.master: I2C hardware NACK detected
-E (1903) i2c.master: I2C transaction unexpected nack detected
-E (1903) i2c.master: s_i2c_synchronous_transaction(924): I2C transaction failed
-E (1909) i2c.master: i2c_master_multi_buffer_transmit(1186): I2C transaction failed
-[  1919][E][esp32-hal-i2c-ng.c:265] i2cWrite(): i2c_master_transmit failed: [259] ESP_ERR_INVALID_STATE
-E (1936) i2c.master: I2C hardware NACK detected
-E (1936) i2c.master: I2C transaction unexpected nack detected
-E (1937) i2c.master: s_i2c_synchronous_transaction(924): I2C transaction failed
-E (1942) i2c.master: i2c_master_multi_buffer_transmit(1186): I2C transaction failed
-[  1953][E][esp32-hal-i2c-ng.c:265] i2cWrite(): i2c_master_transmit failed: [259] ESP_ERR_INVALID_STATE
-E (1970) i2c.master: I2C hardware NACK detected
-E (1970) i2c.master: I2C transaction unexpected nack detected
-E (1970) i2c.master: s_i2c_synchronous_transaction(924): I2C transaction failed
-E (1975) i2c.master: i2c_master_multi_buffer_transmit(1186): I2C transaction failed
-[  1986][E][esp32-hal-i2c-ng.c:265] i2cWrite(): i2c_master_transmit failed: [259] ESP_ERR_INVALID_STATE
-radioTxInit start on 433000000.000000
-the quick brown fox 1,3,5
-E96 BF:4< 3C@H? 7@I `[b[d
-the quick brown fox 1,3,5
-Starting LoRa failed!
-[ 10544][I][BluetoothA2DPCommon.cpp:550] set_scan_mode_connectable(): [BT_AV] set_scan_mode_connectable false
-[ 10554][I][BluetoothA2DPSource.cpp:523] av_hdl_stack_evt(): [BT_AV] Starting device discovery...
-[ 10562][I][BluetoothA2DPSource.cpp:588] bt_app_av_sm_hdlr(): [BT_AV] bt_app_av_sm_hdlr state DISCOVERING, evt 0x4
-[ 10565][I][BluetoothA2DPSource.cpp:372] app_gap_callback(): [BT_AV] Discovery started.
-[ 20562][I][BluetoothA2DPSource.cpp:588] bt_app_av_sm_hdlr(): [BT_AV] bt_app_av_sm_hdlr state DISCOVERING, evt 0xff00
-[ 23369][I][BluetoothA2DPSource.cpp:363] app_gap_callback(): [BT_AV] Device discovery failed, continue to discover...
-[ 23383][I][BluetoothA2DPSource.cpp:372] app_gap_callback(): [BT_AV] Discovery started.
-[ 30562][I][BluetoothA2DPSource.cpp:588] bt_app_av_sm_hdlr(): [BT_AV] bt_app_av_sm_hdlr state DISCOVERING, evt 0xff00
-[ 36188][I][BluetoothA2DPSource.cpp:363] app_gap_callback(): [BT_AV] Device discovery failed, continue to discover...
-[ 36202][I][BluetoothA2DPSource.cpp:372] app_gap_callback(): [BT_AV] Discovery started.
-[ 40562][I][BluetoothA2DPSource.cpp:588] bt_app_av_sm_hdlr(): [BT_AV] bt_app_av_sm_hdlr state DISCOVERING, evt 0xff00
-[ 49007][I][BluetoothA2DPSource.cpp:363] app_gap_callback(): [BT_AV] Device discovery failed, continue to discover...
-[ 49021][I][BluetoothA2DPSource.cpp:372] app_gap_callback(): [BT_AV] Discovery started.
-[ 50562][I][BluetoothA2DPSource.cpp:588] bt_app_av_sm_hdlr(): [BT_AV] bt_app_av_sm_hdlr state DISCOVERING, evt 0xff00
-[ 60562][I][BluetoothA2DPSource.cpp:588] bt_app_av_sm_hdlr(): [BT_AV] bt_app_av_sm_hdlr state DISCOVERING, evt 0xff00
-[ 61825][I][BluetoothA2DPSource.cpp:363] app_gap_callback(): [BT_AV] Device discovery failed, continue to discover...
-[ 61839][I][BluetoothA2DPSource.cpp:372] app_gap_callback(): [BT_AV] Discovery started.
-[ 70562][I][BluetoothA2DPSource.cpp:588] bt_app_av_sm_hdlr(): [BT_AV] bt_app_av_sm_hdlr state DISCOVERING, evt 0xff00
-[ 74644][I][BluetoothA2DPSource.cpp:363] app_gap_callback(): [BT_AV] Device discovery failed, continue to discover...
-[ 74658][I][BluetoothA2DPSource.cpp:372] app_gap_callback(): [BT_AV] Discovery started.
-[ 80562][I][BluetoothA2DPSource.cpp:588] bt_app_av_sm_hdlr(): [BT_AV] bt_app_av_sm_hdlr state DISCOVERING, evt 0xff00
-[ 87463][I][BluetoothA2DPSource.cpp:363] app_gap_callback(): [BT_AV] Device discovery failed, continue to discover...
-[ 87477][I][BluetoothA2DPSource.cpp:372] app_gap_callback(): [BT_AV] Discovery started.
-[ 90562][I][BluetoothA2DPSource.cpp:588] bt_app_av_sm_hdlr(): [BT_AV] bt_app_av_sm_hdlr state DISCOVERING, evt 0xff00
-[100282][I][BluetoothA2DPSource.cpp:363] app_gap_callback(): [BT_AV] Device discovery failed, continue to discover...
-[100296][I][BluetoothA2DPSource.cpp:372] app_gap_callback(): [BT_AV] Discovery started.
-[100562][I][BluetoothA2DPSource.cpp:588] bt_app_av_sm_hdlr(): [BT_AV] bt_app_av_sm_hdlr state DISCOVERING, evt 0xff00
-[110562][I][BluetoothA2DPSource.cpp:588] bt_app_av_sm_hdlr(): [BT_AV] bt_app_av_sm_hdlr state DISCOVERING, evt 0xff00
-[113100][I][BluetoothA2DPSource.cpp:363] app_gap_callback(): [BT_AV] Device discovery failed, continue to discover...
-[113114][I][BluetoothA2DPSource.cpp:372] app_gap_callback(): [BT_AV] Discovery started.
-[120562][I][BluetoothA2DPSource.cpp:588] bt_app_av_sm_hdlr(): [BT_AV] bt_app_av_sm_hdlr state DISCOVERING, evt 0xff00
-[125919][I][BluetoothA2DPSource.cpp:363] app_gap_callback(): [BT_AV] Device discovery failed, continue to discover...
-[125933][I][BluetoothA2DPSource.cpp:372] app_gap_callback(): [BT_AV] Discovery started.
-[130562][I][BluetoothA2DPSource.cpp:588] bt_app_av_sm_hdlr(): [BT_AV] bt_app_av_sm_hdlr state DISCOVERING, evt 0xff00
-[138738][I][BluetoothA2DPSource.cpp:363] app_gap_callback(): [BT_AV] Device discovery failed, continue to discover...
-[138752][I][BluetoothA2DPSource.cpp:372] app_gap_callback(): [BT_AV] Discovery started.
-[140562][I][BluetoothA2DPSource.cpp:588] bt_app_av_sm_hdlr(): [BT_AV] bt_app_av_sm_hdlr state DISCOVERING, evt 0xff00
-[150562][I][BluetoothA2DPSource.cpp:588] bt_app_av_sm_hdlr(): [BT_AV] bt_app_av_sm_hdlr state DISCOVERING, evt 0xff00
-[151557][I][BluetoothA2DPSource.cpp:363] app_gap_callback(): [BT_AV] Device discovery failed, continue to discover...
-[151571][I][BluetoothA2DPSource.cpp:372] app_gap_callback(): [BT_AV] Discovery started.
-[160562][I][BluetoothA2DPSource.cpp:588] bt_app_av_sm_hdlr(): [BT_AV] bt_app_av_sm_hdlr state DISCOVERING, evt 0xff00
-[164375][I][BluetoothA2DPSource.cpp:363] app_gap_callback(): [BT_AV] Device discovery failed, continue to discover...
-[164389][I][BluetoothA2DPSource.cpp:372] app_gap_callback(): [BT_AV] Discovery started.
-[170562][I][BluetoothA2DPSource.cpp:588] bt_app_av_sm_hdlr(): [BT_AV] bt_app_av_sm_hdlr state DISCOVERING, evt 0xff00
-[177194][I][BluetoothA2DPSource.cpp:363] app_gap_callback(): [BT_AV] Device discovery failed, continue to discover...
-[177208][I][BluetoothA2DPSource.cpp:372] app_gap_callback(): [BT_AV] Discovery started.
-[180562][I][BluetoothA2DPSource.cpp:588] bt_app_av_sm_hdlr(): [BT_AV] bt_app_av_sm_hdlr state DISCOVERING, evt 0xff00
-[190013][I][BluetoothA2DPSource.cpp:363] app_gap_callback(): [BT_AV] Device discovery failed, continue to discover...
-[190027][I][BluetoothA2DPSource.cpp:372] app_gap_callback(): [BT_AV] Discovery started.
-[190562][I][BluetoothA2DPSource.cpp:588] bt_app_av_sm_hdlr(): [BT_AV] bt_app_av_sm_hdlr state DISCOVERING, evt 0xff00
-[200562][I][BluetoothA2DPSource.cpp:588] bt_app_av_sm_hdlr(): [BT_AV] bt_app_av_sm_hdlr state DISCOVERING, evt 0xff00
-[202832][I][BluetoothA2DPSource.cpp:363] app_gap_callback(): [BT_AV] Device discovery failed, continue to discover...
-[202846][I][BluetoothA2DPSource.cpp:372] app_gap_callback(): [BT_AV] Discovery started.
-[210562][I][BluetoothA2DPSource.cpp:588] bt_app_av_sm_hdlr(): [BT_AV] bt_app_av_sm_hdlr state DISCOVERING, evt 0xff00
-[215650][I][BluetoothA2DPSource.cpp:363] app_gap_callback(): [BT_AV] Device discovery failed, continue to discover...
-[215664][I][BluetoothA2DPSource.cpp:372] app_gap_callback(): [BT_AV] Discovery started.
-[220562][I][BluetoothA2DPSource.cpp:588] bt_app_av_sm_hdlr(): [BT_AV] bt_app_av_sm_hdlr state DISCOVERING, evt 0xff00
-[228469][I][BluetoothA2DPSource.cpp:363] app_gap_callback(): [BT_AV] Device discovery failed, continue to discover...
-[228483][I][BluetoothA2DPSource.cpp:372] app_gap_callback(): [BT_AV] Discovery started.
-[230562][I][BluetoothA2DPSource.cpp:588] bt_app_av_sm_hdlr(): [BT_AV] bt_app_av_sm_hdlr state DISCOVERING, evt 0xff00
-[240562][I][BluetoothA2DPSource.cpp:588] bt_app_av_sm_hdlr(): [BT_AV] bt_app_av_sm_hdlr state DISCOVERING, evt 0xff00
-[241288][I][BluetoothA2DPSource.cpp:363] app_gap_callback(): [BT_AV] Device discovery failed, continue to discover...
-[241302][I][BluetoothA2DPSource.cpp:372] app_gap_callback(): [BT_AV] Discovery started.
-[250562][I][BluetoothA2DPSource.cpp:588] bt_app_av_sm_hdlr(): [BT_AV] bt_app_av_sm_hdlr state DISCOVERING, evt 0xff00
-[254107][I][BluetoothA2DPSource.cpp:363] app_gap_callback(): [BT_AV] Device discovery failed, continue to discover...
-[254121][I][BluetoothA2DPSource.cpp:372] app_gap_callback(): [BT_AV] Discovery started.
-[260562][I][BluetoothA2DPSource.cpp:588] bt_app_av_sm_hdlr(): [BT_AV] bt_app_av_sm_hdlr state DISCOVERING, evt 0xff00
-[266925][I][BluetoothA2DPSource.cpp:363] app_gap_callback(): [BT_AV] Device discovery failed, continue to discover...
-[266939][I][BluetoothA2DPSource.cpp:372] app_gap_callback(): [BT_AV] Discovery started.
-[270562][I][BluetoothA2DPSource.cpp:588] bt_app_av_sm_hdlr(): [BT_AV] bt_app_av_sm_hdlr state DISCOVERING, evt 0xff00
-[279744][I][BluetoothA2DPSource.cpp:363] app_gap_callback(): [BT_AV] Device discovery failed, continue to discover...
-[279758][I][BluetoothA2DPSource.cpp:372] app_gap_callback(): [BT_AV] Discovery started.
-[280562][I][BluetoothA2DPSource.cpp:588] bt_app_av_sm_hdlr(): [BT_AV] bt_app_av_sm_hdlr state DISCOVERING, evt 0xff00
-[290562][I][BluetoothA2DPSource.cpp:588] bt_app_av_sm_hdlr(): [BT_AV] bt_app_av_sm_hdlr state DISCOVERING, evt 0xff00
-[292563][I][BluetoothA2DPSource.cpp:363] app_gap_callback(): [BT_AV] Device discovery failed, continue to discover...
-[292577][I][BluetoothA2DPSource.cpp:372] app_gap_callback(): [BT_AV] Discovery started.
-[300562][I][BluetoothA2DPSource.cpp:588] bt_app_av_sm_hdlr(): [BT_AV] bt_app_av_sm_hdlr state DISCOVERING, evt 0xff00
-[305382][I][BluetoothA2DPSource.cpp:363] app_gap_callback(): [BT_AV] Device discovery failed, continue to discover...
-[305396][I][BluetoothA2DPSource.cpp:372] app_gap_callback(): [BT_AV] Discovery started.
-[310562][I][BluetoothA2DPSource.cpp:588] bt_app_av_sm_hdlr(): [BT_AV] bt_app_av_sm_hdlr state DISCOVERING, evt 0xff00
-[318200][I][BluetoothA2DPSource.cpp:363] app_gap_callback(): [BT_AV] Device discovery failed, continue to discover...
-[318214][I][BluetoothA2DPSource.cpp:372] app_gap_callback(): [BT_AV] Discovery started.
-[320562][I][BluetoothA2DPSource.cpp:588] bt_app_av_sm_hdlr(): [BT_AV] bt_app_av_sm_hdlr state DISCOVERING, evt 0xff00
-[330562][I][BluetoothA2DPSource.cpp:588] bt_app_av_sm_hdlr(): [BT_AV] bt_app_av_sm_hdlr state DISCOVERING, evt 0xff00
-[331019][I][BluetoothA2DPSource.cpp:363] app_gap_callback(): [BT_AV] Device discovery failed, continue to discover...
-[331033][I][BluetoothA2DPSource.cpp:372] app_gap_callback(): [BT_AV] Discovery started.
-[340562][I][BluetoothA2DPSource.cpp:588] bt_app_av_sm_hdlr(): [BT_AV] bt_app_av_sm_hdlr state DISCOVERING, evt 0xff00
-[343838][I][BluetoothA2DPSource.cpp:363] app_gap_callback(): [BT_AV] Device discovery failed, continue to discover...
-[343852][I][BluetoothA2DPSource.cpp:372] app_gap_callback(): [BT_AV] Discovery started.
-[350562][I][BluetoothA2DPSource.cpp:588] bt_app_av_sm_hdlr(): [BT_AV] bt_app_av_sm_hdlr state DISCOVERING, evt 0xff00
-[356657][I][BluetoothA2DPSource.cpp:363] app_gap_callback(): [BT_AV] Device discovery failed, continue to discover...
-[356671][I][BluetoothA2DPSource.cpp:372] app_gap_callback(): [BT_AV] Discovery started.
-[360562][I][BluetoothA2DPSource.cpp:588] bt_app_av_sm_hdlr(): [BT_AV] bt_app_av_sm_hdlr state DISCOVERING, evt 0xff00
-[369475][I][BluetoothA2DPSource.cpp:363] app_gap_callback(): [BT_AV] Device discovery failed, continue to discover...
-[369489][I][BluetoothA2DPSource.cpp:372] app_gap_callback(): [BT_AV] Discovery started.
-[370562][I][BluetoothA2DPSource.cpp:588] bt_app_av_sm_hdlr(): [BT_AV] bt_app_av_sm_hdlr state DISCOVERING, evt 0xff00
-[380562][I][BluetoothA2DPSource.cpp:588] bt_app_av_sm_hdlr(): [BT_AV] bt_app_av_sm_hdlr state DISCOVERING, evt 0xff00
-[382294][I][BluetoothA2DPSource.cpp:363] app_gap_callback(): [BT_AV] Device discovery failed, continue to discover...
-[382308][I][BluetoothA2DPSource.cpp:372] app_gap_callback(): [BT_AV] Discovery started.
-[390562][I][BluetoothA2DPSource.cpp:588] bt_app_av_sm_hdlr(): [BT_AV] bt_app_av_sm_hdlr state DISCOVERING, evt 0xff00
-[395113][I][BluetoothA2DPSource.cpp:363] app_gap_callback(): [BT_AV] Device discovery failed, continue to discover...
-[395127][I][BluetoothA2DPSource.cpp:372] app_gap_callback(): [BT_AV] Discovery started.
-[400562][I][BluetoothA2DPSource.cpp:588] bt_app_av_sm_hdlr(): [BT_AV] bt_app_av_sm_hdlr state DISCOVERING, evt 0xff00
-[407932][I][BluetoothA2DPSource.cpp:363] app_gap_callback(): [BT_AV] Device discovery failed, continue to discover...
-[407946][I][BluetoothA2DPSource.cpp:372] app_gap_callback(): [BT_AV] Discovery started.
-[410562][I][BluetoothA2DPSource.cpp:588] bt_app_av_sm_hdlr(): [BT_AV] bt_app_av_sm_hdlr state DISCOVERING, evt 0xff00
-[420562][I][BluetoothA2DPSource.cpp:588] bt_app_av_sm_hdlr(): [BT_AV] bt_app_av_sm_hdlr state DISCOVERING, evt 0xff00
-[420750][I][BluetoothA2DPSource.cpp:363] app_gap_callback(): [BT_AV] Device discovery failed, continue to discover...
-[420764][I][BluetoothA2DPSource.cpp:372] app_gap_callback(): [BT_AV] Discovery started.
-[430562][I][BluetoothA2DPSource.cpp:588] bt_app_av_sm_hdlr(): [BT_AV] bt_app_av_sm_hdlr state DISCOVERING, evt 0xff00
-[433569][I][BluetoothA2DPSource.cpp:363] app_gap_callback(): [BT_AV] Device discovery failed, continue to discover...
-[433583][I][BluetoothA2DPSource.cpp:372] app_gap_callback(): [BT_AV] Discovery started.
-[440562][I][BluetoothA2DPSource.cpp:588] bt_app_av_sm_hdlr(): [BT_AV] bt_app_av_sm_hdlr state DISCOVERING, evt 0xff00
-[446388][I][BluetoothA2DPSource.cpp:363] app_gap_callback(): [BT_AV] Device discovery failed, continue to discover...
-[446402][I][BluetoothA2DPSource.cpp:372] app_gap_callback(): [BT_AV] Discovery started.
-[450562][I][BluetoothA2DPSource.cpp:588] bt_app_av_sm_hdlr(): [BT_AV] bt_app_av_sm_hdlr state DISCOVERING, evt 0xff00
-[459207][I][BluetoothA2DPSource.cpp:363] app_gap_callback(): [BT_AV] Device discovery failed, continue to discover...
-[459221][I][BluetoothA2DPSource.cpp:372] app_gap_callback(): [BT_AV] Discovery started.
-[460562][I][BluetoothA2DPSource.cpp:588] bt_app_av_sm_hdlr(): [BT_AV] bt_app_av_sm_hdlr state DISCOVERING, evt 0xff00
-[470562][I][BluetoothA2DPSource.cpp:588] bt_app_av_sm_hdlr(): [BT_AV] bt_app_av_sm_hdlr state DISCOVERING, evt 0xff00
-[472025][I][BluetoothA2DPSource.cpp:363] app_gap_callback(): [BT_AV] Device discovery failed, continue to discover...
-[472039][I][BluetoothA2DPSource.cpp:372] app_gap_callback(): [BT_AV] Discovery started.
-[480562][I][BluetoothA2DPSource.cpp:588] bt_app_av_sm_hdlr(): [BT_AV] bt_app_av_sm_hdlr state DISCOVERING, evt 0xff00
-[484844][I][BluetoothA2DPSource.cpp:363] app_gap_callback(): [BT_AV] Device discovery failed, continue to discover...
-[484858][I][BluetoothA2DPSource.cpp:372] app_gap_callback(): [BT_AV] Discovery started.
-[490562][I][BluetoothA2DPSource.cpp:588] bt_app_av_sm_hdlr(): [BT_AV] bt_app_av_sm_hdlr state DISCOVERING, evt 0xff00
-[497663][I][BluetoothA2DPSource.cpp:363] app_gap_callback(): [BT_AV] Device discovery failed, continue to discover...
-[497677][I][BluetoothA2DPSource.cpp:372] app_gap_callback(): [BT_AV] Discovery started.
-[500562][I][BluetoothA2DPSource.cpp:588] bt_app_av_sm_hdlr(): [BT_AV] bt_app_av_sm_hdlr state DISCOVERING, evt 0xff00
-[510482][I][BluetoothA2DPSource.cpp:363] app_gap_callback(): [BT_AV] Device discovery failed, continue to discover...
-[510496][I][BluetoothA2DPSource.cpp:372] app_gap_callback(): [BT_AV] Discovery started.
-[510562][I][BluetoothA2DPSource.cpp:588] bt_app_av_sm_hdlr(): [BT_AV] bt_app_av_sm_hdlr state DISCOVERING, evt 0xff00
-[518156][I][BluetoothA2DPSource.cpp:279] filter_inquiry_scan_result(): [BT_AV] Scanned device: 00:24:d6:d0:25:31
-[518167][I][BluetoothA2DPSource.cpp:285] filter_inquiry_scan_result(): [BT_AV] --Class of Device: 0x6c010c
-[518176][I][BluetoothA2DPSource.cpp:289] filter_inquiry_scan_result(): [BT_AV] --RSSI: -35
-[518184][I][BluetoothA2DPSource.cpp:307] filter_inquiry_scan_result(): [BT_AV] --Compatiblity: Compatible
-[518193][I][BluetoothA2DPSource.cpp:309] filter_inquiry_scan_result(): [BT_AV] --Name: dwade-15R
-  1) available SSID: dwade-15R -35
-[518202][I][BluetoothA2DPSource.cpp:330] filter_inquiry_scan_result(): [BT_AV] --Result: Target device found
-[518215][I][BluetoothA2DPSource.cpp:334] filter_inquiry_scan_result(): [BT_AV] Cancel device discovery ...
-[518225][I][BluetoothA2DPSource.cpp:357] app_gap_callback(): [BT_AV] Device discovery stopped.
-[518234][I][BluetoothA2DPSource.cpp:358] app_gap_callback(): [BT_AV] a2dp connecting to peer: dwade-15R
-[518243][I][BluetoothA2DPSource.h:306] esp_a2d_connect(): [BT_AV] ==> a2dp connecting to: 00:24:d6:d0:25:31
-[518257][I][BluetoothA2DPSource.cpp:588] bt_app_av_sm_hdlr(): [BT_AV] bt_app_av_sm_hdlr state CONNECTING, evt 0x0
-[520562][I][BluetoothA2DPSource.cpp:588] bt_app_av_sm_hdlr(): [BT_AV] bt_app_av_sm_hdlr state CONNECTING, evt 0xff00
-[520572][I][BluetoothA2DPSource.cpp:588] bt_app_av_sm_hdlr(): [BT_AV] bt_app_av_sm_hdlr state CONNECTING, evt 0x3
-[520582][I][BluetoothA2DPSource.cpp:588] bt_app_av_sm_hdlr(): [BT_AV] bt_app_av_sm_hdlr state CONNECTED, evt 0x3
-[520941][I][BluetoothA2DPSource.cpp:433] app_gap_callback(): [BT_AV] ESP_BT_GAP_ACL_CONN_CMPL_STAT_EVT
-[528279][I][BluetoothA2DPSource.cpp:381] app_gap_callback(): [BT_AV] authentication success: dwade-15R
-[528329][I][BluetoothA2DPSource.cpp:460] app_gap_callback(): [BT_AV] ESP_BT_GAP_ENC_CHG_EVT
-[528727][I][BluetoothA2DPSource.cpp:588] bt_app_av_sm_hdlr(): [BT_AV] bt_app_av_sm_hdlr state CONNECTED, evt 0x8
-[528737][I][BluetoothA2DPSource.cpp:744] bt_app_av_state_connected_hdlr(): [BT_AV] bt_app_av_state_connected_hdlr, delay value: 0 * 1/10 ms
-[528809][I][BluetoothA2DPSource.cpp:588] bt_app_av_sm_hdlr(): [BT_AV] bt_app_av_sm_hdlr state CONNECTED, evt 0x0
-[530562][I][BluetoothA2DPSource.cpp:588] bt_app_av_sm_hdlr(): [BT_AV] bt_app_av_sm_hdlr state CONNECTED, evt 0xff00
-[530572][I][BluetoothA2DPSource.cpp:799] bt_app_av_media_proc(): [BT_AV] a2dp media ready checking ...
-[530581][I][BluetoothA2DPSource.cpp:588] bt_app_av_sm_hdlr(): [BT_AV] bt_app_av_sm_hdlr state CONNECTED, evt 0x3
-[530591][I][BluetoothA2DPSource.cpp:805] bt_app_av_media_proc(): [BT_AV] a2dp media ready, starting ...
-[530616][I][BluetoothA2DPSource.cpp:588] bt_app_av_sm_hdlr(): [BT_AV] bt_app_av_sm_hdlr state CONNECTED, evt 0x3
-[530626][I][BluetoothA2DPSource.cpp:817] bt_app_av_media_proc(): [BT_AV] a2dp media start successfully.
-[530635][I][BluetoothA2DPSource.cpp:588] bt_app_av_sm_hdlr(): [BT_AV] bt_app_av_sm_hdlr state CONNECTED, evt 0x1
-[531504][I][BluetoothA2DPSource.cpp:919] bt_av_hdl_avrc_ct_evt(): [RCCT] AVRC conn_state event: state 1, [00:24:d6:d0:25:31]
-[531515][I][BluetoothA2DPSource.cpp:927] bt_av_hdl_avrc_ct_evt(): [BT_AV] esp_avrc_ct_send_register_notification_cmd
-[531526][I][BluetoothA2DPSource.cpp:982] bt_av_hdl_avrc_ct_evt(): [RCCT] AVRC remote features 25b, TG features 5f
-[531567][I][BluetoothA2DPSource.cpp:991] bt_av_hdl_avrc_ct_evt(): [RCCT] remote rn_cap: count 8, bitmask 0x2d1e
-[540562][I][BluetoothA2DPSource.cpp:588] bt_app_av_sm_hdlr(): [BT_AV] bt_app_av_sm_hdlr state CONNECTED, evt 0xff00
-[540572][I][BluetoothA2DPSource.cpp:830] bt_app_av_media_proc(): [BT_AV] a2dp media started
-[550562][I][BluetoothA2DPSource.cpp:588] bt_app_av_sm_hdlr(): [BT_AV] bt_app_av_sm_hdlr state CONNECTED, evt 0xff00
-[550572][I][BluetoothA2DPSource.cpp:830] bt_app_av_media_proc(): [BT_AV] a2dp media started
-[560562][I][BluetoothA2DPSource.cpp:588] bt_app_av_sm_hdlr(): [BT_AV] bt_app_av_sm_hdlr state CONNECTED, evt 0xff00
-[560572][I][BluetoothA2DPSource.cpp:830] bt_app_av_media_proc(): [BT_AV] a2dp media started
-[570562][I][BluetoothA2DPSource.cpp:588] bt_app_av_sm_hdlr(): [BT_AV] bt_app_av_sm_hdlr state CONNECTED, evt 0xff00
-[570572][I][BluetoothA2DPSource.cpp:830] bt_app_av_media_proc(): [BT_AV] a2dp media started
-[580562][I][BluetoothA2DPSource.cpp:588] bt_app_av_sm_hdlr(): [BT_AV] bt_app_av_sm_hdlr state CONNECTED, evt 0xff00
-[580572][I][BluetoothA2DPSource.cpp:830] bt_app_av_media_proc(): [BT_AV] a2dp media started
-[590562][I][BluetoothA2DPSource.cpp:588] bt_app_av_sm_hdlr(): [BT_AV] bt_app_av_sm_hdlr state CONNECTED, evt 0xff00
-[590572][I][BluetoothA2DPSource.cpp:830] bt_app_av_media_proc(): [BT_AV] a2dp media started
-[600562][I][BluetoothA2DPSource.cpp:588] bt_app_av_sm_hdlr(): [BT_AV] bt_app_av_sm_hdlr state CONNECTED, evt 0xff00
-[600572][I][BluetoothA2DPSource.cpp:830] bt_app_av_media_proc(): [BT_AV] a2dp media started
-[610562][I][BluetoothA2DPSource.cpp:588] bt_app_av_sm_hdlr(): [BT_AV] bt_app_av_sm_hdlr state CONNECTED, evt 0xff00
-[610572][I][BluetoothA2DPSource.cpp:830] bt_app_av_media_proc(): [BT_AV] a2dp media started
-[620562][I][BluetoothA2DPSource.cpp:588] bt_app_av_sm_hdlr(): [BT_AV] bt_app_av_sm_hdlr state CONNECTED, evt 0xff00
-[620572][I][BluetoothA2DPSource.cpp:830] bt_app_av_media_proc(): [BT_AV] a2dp media started
-[630562][I][BluetoothA2DPSource.cpp:588] bt_app_av_sm_hdlr(): [BT_AV] bt_app_av_sm_hdlr state CONNECTED, evt 0xff00
-[630572][I][BluetoothA2DPSource.cpp:830] bt_app_av_media_proc(): [BT_AV] a2dp media started
-[640562][I][BluetoothA2DPSource.cpp:588] bt_app_av_sm_hdlr(): [BT_AV] bt_app_av_sm_hdlr state CONNECTED, evt 0xff00
-[640572][I][BluetoothA2DPSource.cpp:830] bt_app_av_media_proc(): [BT_AV] a2dp media started
-[650562][I][BluetoothA2DPSource.cpp:588] bt_app_av_sm_hdlr(): [BT_AV] bt_app_av_sm_hdlr state CONNECTED, evt 0xff00
-[650572][I][BluetoothA2DPSource.cpp:830] bt_app_av_media_proc(): [BT_AV] a2dp media started
-[660562][I][BluetoothA2DPSource.cpp:588] bt_app_av_sm_hdlr(): [BT_AV] bt_app_av_sm_hdlr state CONNECTED, evt 0xff00
-[660572][I][BluetoothA2DPSource.cpp:830] bt_app_av_media_proc(): [BT_AV] a2dp media started
-[670562][I][BluetoothA2DPSource.cpp:588] bt_app_av_sm_hdlr(): [BT_AV] bt_app_av_sm_hdlr state CONNECTED, evt 0xff00
-[670572][I][BluetoothA2DPSource.cpp:830] bt_app_av_media_proc(): [BT_AV] a2dp media started
-[680562][I][BluetoothA2DPSource.cpp:588] bt_app_av_sm_hdlr(): [BT_AV] bt_app_av_sm_hdlr state CONNECTED, evt 0xff00
-[680572][I][BluetoothA2DPSource.cpp:830] bt_app_av_media_proc(): [BT_AV] a2dp media started
-[690562][I][BluetoothA2DPSource.cpp:588] bt_app_av_sm_hdlr(): [BT_AV] bt_app_av_sm_hdlr state CONNECTED, evt 0xff00
-[690572][I][BluetoothA2DPSource.cpp:830] bt_app_av_media_proc(): [BT_AV] a2dp media started
-[700562][I][BluetoothA2DPSource.cpp:588] bt_app_av_sm_hdlr(): [BT_AV] bt_app_av_sm_hdlr state CONNECTED, evt 0xff00
-[700572][I][BluetoothA2DPSource.cpp:830] bt_app_av_media_proc(): [BT_AV] a2dp media started
-[710562][I][BluetoothA2DPSource.cpp:588] bt_app_av_sm_hdlr(): [BT_AV] bt_app_av_sm_hdlr state CONNECTED, evt 0xff00
-[710572][I][BluetoothA2DPSource.cpp:830] bt_app_av_media_proc(): [BT_AV] a2dp media started
-[720562][I][BluetoothA2DPSource.cpp:588] bt_app_av_sm_hdlr(): [BT_AV] bt_app_av_sm_hdlr state CONNECTED, evt 0xff00
-[720572][I][BluetoothA2DPSource.cpp:830] bt_app_av_media_proc(): [BT_AV] a2dp media started
-[730562][I][BluetoothA2DPSource.cpp:588] bt_app_av_sm_hdlr(): [BT_AV] bt_app_av_sm_hdlr state CONNECTED, evt 0xff00
-[730572][I][BluetoothA2DPSource.cpp:830] bt_app_av_media_proc(): [BT_AV] a2dp media started
-[740562][I][BluetoothA2DPSource.cpp:588] bt_app_av_sm_hdlr(): [BT_AV] bt_app_av_sm_hdlr state CONNECTED, evt 0xff00
-[740572][I][BluetoothA2DPSource.cpp:830] bt_app_av_media_proc(): [BT_AV] a2dp media started
-[750562][I][BluetoothA2DPSource.cpp:588] bt_app_av_sm_hdlr(): [BT_AV] bt_app_av_sm_hdlr state CONNECTED, evt 0xff00
-[750572][I][BluetoothA2DPSource.cpp:830] bt_app_av_media_proc(): [BT_AV] a2dp media started
-[760562][I][BluetoothA2DPSource.cpp:588] bt_app_av_sm_hdlr(): [BT_AV] bt_app_av_sm_hdlr state CONNECTED, evt 0xff00
-[760572][I][BluetoothA2DPSource.cpp:830] bt_app_av_media_proc(): [BT_AV] a2dp media started
-[770562][I][BluetoothA2DPSource.cpp:588] bt_app_av_sm_hdlr(): [BT_AV] bt_app_av_sm_hdlr state CONNECTED, evt 0xff00
-[770572][I][BluetoothA2DPSource.cpp:830] bt_app_av_media_proc(): [BT_AV] a2dp media started
-[780562][I][BluetoothA2DPSource.cpp:588] bt_app_av_sm_hdlr(): [BT_AV] bt_app_av_sm_hdlr state CONNECTED, evt 0xff00
-[780572][I][BluetoothA2DPSource.cpp:830] bt_app_av_media_proc(): [BT_AV] a2dp media started
-[790562][I][BluetoothA2DPSource.cpp:588] bt_app_av_sm_hdlr(): [BT_AV] bt_app_av_sm_hdlr state CONNECTED, evt 0xff00
-[790572][I][BluetoothA2DPSource.cpp:830] bt_app_av_media_proc(): [BT_AV] a2dp media started
-[800562][I][BluetoothA2DPSource.cpp:588] bt_app_av_sm_hdlr(): [BT_AV] bt_app_av_sm_hdlr state CONNECTED, evt 0xff00
-[800572][I][BluetoothA2DPSource.cpp:830] bt_app_av_media_proc(): [BT_AV] a2dp media started
-[810562][I][BluetoothA2DPSource.cpp:588] bt_app_av_sm_hdlr(): [BT_AV] bt_app_av_sm_hdlr state CONNECTED, evt 0xff00
-[810572][I][BluetoothA2DPSource.cpp:830] bt_app_av_media_proc(): [BT_AV] a2dp media started
-[820562][I][BluetoothA2DPSource.cpp:588] bt_app_av_sm_hdlr(): [BT_AV] bt_app_av_sm_hdlr state CONNECTED, evt 0xff00
-[820572][I][BluetoothA2DPSource.cpp:830] bt_app_av_media_proc(): [BT_AV] a2dp media started
-[830562][I][BluetoothA2DPSource.cpp:588] bt_app_av_sm_hdlr(): [BT_AV] bt_app_av_sm_hdlr state CONNECTED, evt 0xff00
-[830572][I][BluetoothA2DPSource.cpp:830] bt_app_av_media_proc(): [BT_AV] a2dp media started
-[840562][I][BluetoothA2DPSource.cpp:588] bt_app_av_sm_hdlr(): [BT_AV] bt_app_av_sm_hdlr state CONNECTED, evt 0xff00
-[840572][I][BluetoothA2DPSource.cpp:830] bt_app_av_media_proc(): [BT_AV] a2dp media started
-[850562][I][BluetoothA2DPSource.cpp:588] bt_app_av_sm_hdlr(): [BT_AV] bt_app_av_sm_hdlr state CONNECTED, evt 0xff00
-[850572][I][BluetoothA2DPSource.cpp:830] bt_app_av_media_proc(): [BT_AV] a2dp media started
+=~=~=~=~=~=~=~=~=~=~=~= PuTTY log 2025.05.31 16:13:05 =~=~=~=~=~=~=~=~=~=~=~=
+Addr:0x51 - Name:BM8563
+I2C BM8563 Found
+Addr:0x35 - Name:AT608A
+I2C AT608A Found
+AT608A Check Successful
+ECCX08 Serial Number = 0123EFFBF51BE4C501
+
+PSRAM malloc Successful
+PSRAM W&R Successful
+IMU Check Successful
+SDCard Find failed
+no SD card detected. use this 15 sec delay in event of fault
+
+Scanning all i2c addresses
+
+device at 34
+device at 35
+device at 38
+device at 51
+device at 68
+Scanning all i2c addresses done
+
+
+               : Welcome to TouchView
+Button A Sets  : E_MOVE will be ignored
+Button B Sets  : Long Presses will be detected
+Button C Sets  : Key Repeat Disabled
+To Use         : Touch the Screen
+QUARTER_SINE = 90
+ i =   0  degrees = 0.000      0 0x   0 
+ i =   1  degrees = 1.000    571 0x 23B 
+ i =   2  degrees = 2.000   1143 0x 477 
+ i =   3  degrees = 3.000   1714 0x 6B2 
+ i =   4  degrees = 4.000   2285 0x 8ED 
+ i =   5  degrees = 5.000   2855 0x B27 
+ i =   6  degrees = 6.000   3425 0x D61 
+ i =   7  degrees = 7.000   3993 0x F99 
+ i =   8  degrees = 8.000   4560 0x11D0 
+ i =   9  degrees = 9.000   5125 0x1405 
+ i =  10  degrees = 10.000   5689 0x1639 
+ i =  11  degrees = 11.000   6252 0x186C 
+ i =  12  degrees = 12.000   6812 0x1A9C 
+ i =  13  degrees = 13.000   7370 0x1CCA 
+ i =  14  degrees = 14.000   7927 0x1EF7 
+ i =  15  degrees = 15.000   8480 0x2120 
+ i =  16  degrees = 16.000   9031 0x2347 
+ i =  17  degrees = 17.000   9580 0x256C 
+ i =  18  degrees = 18.000  10125 0x278D 
+ i =  19  degrees = 19.000  10667 0x29AB 
+ i =  20  degrees = 20.000  11206 0x2BC6 
+ i =  21  degrees = 21.000  11742 0x2DDE 
+ i =  22  degrees = 22.000  12274 0x2FF2 
+ i =  23  degrees = 23.000  12803 0x3203 
+ i =  24  degrees = 24.000  13327 0x340F 
+ i =  25  degrees = 25.000  13847 0x3617 
+ i =  26  degrees = 26.000  14364 0x381C 
+ i =  27  degrees = 27.000  14875 0x3A1B 
+ i =  28  degrees = 28.000  15383 0x3C17 
+ i =  29  degrees = 29.000  15885 0x3E0D 
+ i =  30  degrees = 30.000  16383 0x3FFF 
+ i =  31  degrees = 31.000  16876 0x41EC 
+ i =  32  degrees = 32.000  17363 0x43D3 
+ i =  33  degrees = 33.000  17846 0x45B6 
+ i =  34  degrees = 34.000  18323 0x4793 
+ i =  35  degrees = 35.000  18794 0x496A 
+ i =  36  degrees = 36.000  19259 0x4B3B 
+ i =  37  degrees = 37.000  19719 0x4D07 
+ i =  38  degrees = 38.000  20173 0x4ECD 
+ i =  39  degrees = 39.000  20620 0x508C 
+ i =  40  degrees = 40.000  21062 0x5246 
+ i =  41  degrees = 41.000  21497 0x53F9 
+ i =  42  degrees = 42.000  21925 0x55A5 
+ i =  43  degrees = 43.000  22347 0x574B 
+ i =  44  degrees = 44.000  22761 0x58E9 
+ i =  45  degrees = 45.000  23169 0x5A81 
+ i =  46  degrees = 46.000  23570 0x5C12 
+ i =  47  degrees = 47.000  23964 0x5D9C 
+ i =  48  degrees = 48.000  24350 0x5F1E 
+ i =  49  degrees = 49.000  24729 0x6099 
+ i =  50  degrees = 50.000  25100 0x620C 
+ i =  51  degrees = 51.000  25464 0x6378 
+ i =  52  degrees = 52.000  25820 0x64DC 
+ i =  53  degrees = 53.000  26168 0x6638 
+ i =  54  degrees = 54.000  26509 0x678D 
+ i =  55  degrees = 55.000  26841 0x68D9 
+ i =  56  degrees = 56.000  27165 0x6A1D 
+ i =  57  degrees = 57.000  27480 0x6B58 
+ i =  58  degrees = 58.000  27787 0x6C8B 
+ i =  59  degrees = 59.000  28086 0x6DB6 
+ i =  60  degrees = 60.000  28377 0x6ED9 
+ i =  61  degrees = 61.000  28658 0x6FF2 
+ i =  62  degrees = 62.000  28931 0x7103 
+ i =  63  degrees = 63.000  29195 0x720B 
+ i =  64  degrees = 64.000  29450 0x730A 
+ i =  65  degrees = 65.000  29696 0x7400 
+ i =  66  degrees = 66.000  29934 0x74EE 
+ i =  67  degrees = 67.000  30162 0x75D2 
+ i =  68  degrees = 68.000  30381 0x76AD 
+ i =  69  degrees = 69.000  30590 0x777E 
+ i =  70  degrees = 70.000  30790 0x7846 
+ i =  71  degrees = 71.000  30981 0x7905 
+ i =  72  degrees = 72.000  31163 0x79BB 
+ i =  73  degrees = 73.000  31335 0x7A67 
+ i =  74  degrees = 74.000  31497 0x7B09 
+ i =  75  degrees = 75.000  31650 0x7BA2 
+ i =  76  degrees = 76.000  31793 0x7C31 
+ i =  77  degrees = 77.000  31927 0x7CB7 
+ i =  78  degrees = 78.000  32050 0x7D32 
+ i =  79  degrees = 79.000  32164 0x7DA4 
+ i =  80  degrees = 80.000  32269 0x7E0D 
+ i =  81  degrees = 81.000  32363 0x7E6B 
+ i =  82  degrees = 82.000  32448 0x7EC0 
+ i =  83  degrees = 83.000  32522 0x7F0A 
+ i =  84  degrees = 84.000  32587 0x7F4B 
+ i =  85  degrees = 85.000  32642 0x7F82 
+ i =  86  degrees = 86.000  32687 0x7FAF 
+ i =  87  degrees = 87.000  32722 0x7FD2 
+ i =  88  degrees = 88.000  32747 0x7FEB 
+ i =  89  degrees = 89.000  32762 0x7FFA 
+ i =  90  degrees = 90.000  32767 0x7FFF 
+
+  0     0 0x   0
+  5  2855 0x B27
+ 10  5689 0x1639
+ 15  8480 0x2120
+ 20 11206 0x2BC6
+ 25 13847 0x3617
+ 30 16383 0x3FFF
+ 35 18794 0x496A
+ 40 21062 0x5246
+ 45 23169 0x5A81
+ 50 25100 0x620C
+ 55 26841 0x68D9
+ 60 28377 0x6ED9
+ 65 29696 0x7400
+ 70 30790 0x7846
+ 75 31650 0x7BA2
+ 80 32269 0x7E0D
+ 85 32642 0x7F82
+ 90 32767 0x7FFF
+ 95 32642 0x7F82
+100 32269 0x7E0D
+105 31650 0x7BA2
+110 30790 0x7846
+115 29696 0x7400
+120 28377 0x6ED9
+125 26841 0x68D9
+130 25100 0x620C
+135 23169 0x5A81
+140 21062 0x5246
+145 18794 0x496A
+150 16383 0x3FFF
+155 13847 0x3617
+160 11206 0x2BC6
+165  8480 0x2120
+170  5689 0x1639
+175  2855 0x B27
+180     0 0x   0
+185 -2855 0xFFFFF4D9
+190 -5689 0xFFFFE9C7
+195 -8480 0xFFFFDEE0
+200 -11206 0xFFFFD43A
+205 -13847 0xFFFFC9E9
+210 -16383 0xFFFFC001
+215 -18794 0xFFFFB696
+220 -21062 0xFFFFADBA
+225 -23169 0xFFFFA57F
+230 -25100 0xFFFF9DF4
+235 -26841 0xFFFF9727
+240 -28377 0xFFFF9127
+245 -29696 0xFFFF8C00
+250 -30790 0xFFFF87BA
+255 -31650 0xFFFF845E
+260 -32269 0xFFFF81F3
+265 -32642 0xFFFF807E
+270 -32767 0xFFFF8001
+275 -32642 0xFFFF807E
+280 -32269 0xFFFF81F3
+285 -31650 0xFFFF845E
+290 -30790 0xFFFF87BA
+295 -29696 0xFFFF8C00
+300 -28377 0xFFFF9127
+305 -26841 0xFFFF9727
+310 -25100 0xFFFF9DF4
+315 -23169 0xFFFFA57F
+320 -21062 0xFFFFADBA
+325 -18794 0xFFFFB696
+330 -16383 0xFFFFC001
+335 -13847 0xFFFFC9E9
+340 -11206 0xFFFFD43A
+345 -8480 0xFFFFDEE0
+350 -5689 0xFFFFE9C7
+355 -2855 0xFFFFF4D9
+360     0 0x   0
+xGuru Meditation Error: Core  1 panic'ed (IllegalInstruction). Exception was unhandled.
+Memory dump at 0x400d3d1c: d4e50020 00f01d0d 0c0cc825
+Core  1 register dump:
+PC      : 0x400d3d21  PS      : 0x00060130  A0      : 0x00000000  A1      : 0x3ffce2c0  
+A2      : 0x00000000  A3      : 0x3ffc43f4  A4      : 0x00000000  A5      : 0x00000000  
+A6      : 0x00000000  A7      : 0x00000000  A8      : 0x800d3d21  A9      : 0x3ffce2a0  
+A10     : 0x0000000a  A11     : 0x3f40deeb  A12     : 0x00000000  A13     : 0x00000004  
+A14     : 0x3ffbc390  A15     : 0x80000001  SAR     : 0x00000000  EXCCAUSE: 0x00000000  
+EXCVADDR: 0x00000000  LBEG    : 0x400954a9  LEND    : 0x400954b9  LCOUNT  : 0xffffffff  
+
+
+Backtrace: 0x400d3d1e:0x3ffce2c0
+
+
+
+
+ELF file SHA256: a0e869f57b62e5cd
+
+Rebooting...
+ets Jul 29 2019 12:21:46
+
+rst:0xc (SW_CPU_RESET),boot:0x17 (SPI_FAST_FLASH_BOOT)
+configsip: 0, SPIWP:0xee
+clk_drv:0x00,q_drv:0x00,d_drv:0x00,cs0_drv:0x00,hd_drv:0x00,wp_drv:0x00
+mode:DIO, clock div:1
+load:0x3fff0030,len:1184
+load:0x40078000,len:13260
+load:0x40080400,len:3028
+entry 0x400805e4
+not a t-beam ... moving onM5Core2 initializing...axp: vbus limit off
+axp: gpio1 init
+axp: gpio2 init
+axp: rtc battery charging enabled
+axp: esp32 power voltage was set to 3.35v
+axp: lcd backlight voltage was set to 2.80v
+axp: lcd logic and sdcard voltage preset to 3.3v
+axp: vibrator voltage preset to 2v
+touch: FT6336 ready (fw id 0x01 rel 1, lib 0x3008)
+OK
+Motor Test
+LED Test
+Addr:0x34 - Name:Axp192
+I2C Axp192 Found
+Addr:0x38 - Name:CST Touch
+I2C CST Touch Found
+Addr:0x68 - Name:IMU6886
+I2C IMU6886 Found
+Addr:0x51 - Name:BM8563
+I2C BM8563 Found
+Addr:0x35 - Name:AT608A
+I2C AT608A Found
+AT608A Check Successful
+ECCX08 Serial Number = 0123EFFBF51BE4C501
+
+PSRAM malloc Successful
+PSRAM W&R Successful
+IMU Check Successful
+SDCard Find failed
+no SD card detected. use this 15 sec delay in event of fault
+
+Scanning all i2c addresses
+
+device at 34
+device at 35
+device at 38
+device at 51
+device at 68
+Scanning all i2c addresses done
+
+
+               : Welcome to TouchView
+Button A Sets  : E_MOVE will be ignored
+Button B Sets  : Long Presses will be detected
+Button C Sets  : Key Repeat Disabled
+To Use         : Touch the Screen
+QUARTER_SINE = 90
+ i =   0  degrees = 0.000      0 0x   0 
+ i =   1  degrees = 1.000    571 0x 23B 
+ i =   2  degrees = 2.000   1143 0x 477 
+ i =   3  degrees = 3.000   1714 0x 6B2 
+ i =   4  degrees = 4.000   2285 0x 8ED 
+ i =   5  degrees = 5.000   2855 0x B27 
+ i =   6  degrees = 6.000   3425 0x D61 
+ i =   7  degrees = 7.000   3993 0x F99 
+ i =   8  degrees = 8.000   4560 0x11D0 
+ i =   9  degrees = 9.000   5125 0x1405 
+ i =  10  degrees = 10.000   5689 0x1639 
+ i =  11  degrees = 11.000   6252 0x186C 
+ i =  12  degrees = 12.000   6812 0x1A9C 
+ i =  13  degrees = 13.000   7370 0x1CCA 
+ i =  14  degrees = 14.000   7927 0x1EF7 
+ i =  15  degrees = 15.000   8480 0x2120 
+ i =  16  degrees = 16.000   9031 0x2347 
+ i =  17  degrees = 17.000   9580 0x256C 
+ i =  18  degrees = 18.000  10125 0x278D 
+ i =  19  degrees = 19.000  10667 0x29AB 
+ i =  20  degrees = 20.000  11206 0x2BC6 
+ i =  21  degrees = 21.000  11742 0x2DDE 
+ i =  22  degrees = 22.000  12274 0x2FF2 
+ i =  23  degrees = 23.000  12803 0x3203 
+ i =  24  degrees = 24.000  13327 0x340F 
+ i =  25  degrees = 25.000  13847 0x3617 
+ i =  26  degrees = 26.000  14364 0x381C 
+ i =  27  degrees = 27.000  14875 0x3A1B 
+ i =  28  degrees = 28.000  15383 0x3C17 
+ i =  29  degrees = 29.000  15885 0x3E0D 
+ i =  30  degrees = 30.000  16383 0x3FFF 
+ i =  31  degrees = 31.000  16876 0x41EC 
+ i =  32  degrees = 32.000  17363 0x43D3 
+ i =  33  degrees = 33.000  17846 0x45B6 
+ i =  34  degrees = 34.000  18323 0x4793 
+ i =  35  degrees = 35.000  18794 0x496A 
+ i =  36  degrees = 36.000  19259 0x4B3B 
+ i =  37  degrees = 37.000  19719 0x4D07 
+ i =  38  degrees = 38.000  20173 0x4ECD 
+ i =  39  degrees = 39.000  20620 0x508C 
+ i =  40  degrees = 40.000  21062 0x5246 
+ i =  41  degrees = 41.000  21497 0x53F9 
+ i =  42  degrees = 42.000  21925 0x55A5 
+ i =  43  degrees = 43.000  22347 0x574B 
+ i =  44  degrees = 44.000  22761 0x58E9 
+ i =  45  degrees = 45.000  23169 0x5A81 
+ i =  46  degrees = 46.000  23570 0x5C12 
+ i =  47  degrees = 47.000  23964 0x5D9C 
+ i =  48  degrees = 48.000  24350 0x5F1E 
+ i =  49  degrees = 49.000  24729 0x6099 
+ i =  50  degrees = 50.000  25100 0x620C 
+ i =  51  degrees = 51.000  25464 0x6378 
+ i =  52  degrees = 52.000  25820 0x64DC 
+ i =  53  degrees = 53.000  26168 0x6638 
+ i =  54  degrees = 54.000  26509 0x678D 
+ i =  55  degrees = 55.000  26841 0x68D9 
+ i =  56  degrees = 56.000  27165 0x6A1D 
+ i =  57  degrees = 57.000  27480 0x6B58 
+ i =  58  degrees = 58.000  27787 0x6C8B 
+ i =  59  degrees = 59.000  28086 0x6DB6 
+ i =  60  degrees = 60.000  28377 0x6ED9 
+ i =  61  degrees = 61.000  28658 0x6FF2 
+ i =  62  degrees = 62.000  28931 0x7103 
+ i =  63  degrees = 63.000  29195 0x720B 
+ i =  64  degrees = 64.000  29450 0x730A 
+ i =  65  degrees = 65.000  29696 0x7400 
+ i =  66  degrees = 66.000  29934 0x74EE 
+ i =  67  degrees = 67.000  30162 0x75D2 
+ i =  68  degrees = 68.000  30381 0x76AD 
+ i =  69  degrees = 69.000  30590 0x777E 
+ i =  70  degrees = 70.000  30790 0x7846 
+ i =  71  degrees = 71.000  30981 0x7905 
+ i =  72  degrees = 72.000  31163 0x79BB 
+ i =  73  degrees = 73.000  31335 0x7A67 
+ i =  74  degrees = 74.000  31497 0x7B09 
+ i =  75  degrees = 75.000  31650 0x7BA2 
+ i =  76  degrees = 76.000  31793 0x7C31 
+ i =  77  degrees = 77.000  31927 0x7CB7 
+ i =  78  degrees = 78.000  32050 0x7D32 
+ i =  79  degrees = 79.000  32164 0x7DA4 
+ i =  80  degrees = 80.000  32269 0x7E0D 
+ i =  81  degrees = 81.000  32363 0x7E6B 
+ i =  82  degrees = 82.000  32448 0x7EC0 
+ i =  83  degrees = 83.000  32522 0x7F0A 
+ i =  84  degrees = 84.000  32587 0x7F4B 
+ i =  85  degrees = 85.000  32642 0x7F82 
+ i =  86  degrees = 86.000  32687 0x7FAF 
+ i =  87  degrees = 87.000  32722 0x7FD2 
+ i =  88  degrees = 88.000  32747 0x7FEB 
+ i =  89  degrees = 89.000  32762 0x7FFA 
+ i =  90  degrees = 90.000  32767 0x7FFF 
+
+  0     0 0x   0
+  5  2855 0x B27
+ 10  5689 0x1639
+ 15  8480 0x2120
+ 20 11206 0x2BC6
+ 25 13847 0x3617
+ 30 16383 0x3FFF
+ 35 18794 0x496A
+ 40 21062 0x5246
+ 45 23169 0x5A81
+ 50 25100 0x620C
+ 55 26841 0x68D9
+ 60 28377 0x6ED9
+ 65 29696 0x7400
+ 70 30790 0x7846
+ 75 31650 0x7BA2
+ 80 32269 0x7E0D
+ 85 32642 0x7F82
+ 90 32767 0x7FFF
+ 95 32642 0x7F82
+100 32269 0x7E0D
+105 31650 0x7BA2
+110 30790 0x7846
+115 29696 0x7400
+120 28377 0x6ED9
+125 26841 0x68D9
+130 25100 0x620C
+135 23169 0x5A81
+140 21062 0x5246
+145 18794 0x496A
+150 16383 0x3FFF
+155 13847 0x3617
+160 11206 0x2BC6
+165  8480 0x2120
+170  5689 0x1639
+175  2855 0x B27
+180     0 0x   0
+185 -2855 0xFFFFF4D9
+190 -5689 0xFFFFE9C7
+195 -8480 0xFFFFDEE0
+200 -11206 0xFFFFD43A
+205 -13847 0xFFFFC9E9
+210 -16383 0xFFFFC001
+215 -18794 0xFFFFB696
+220 -21062 0xFFFFADBA
+225 -23169 0xFFFFA57F
+230 -25100 0xFFFF9DF4
+235 -26841 0xFFFF9727
+240 -28377 0xFFFF9127
+245 -29696 0xFFFF8C00
+250 -30790 0xFFFF87BA
+255 -31650 0xFFFF845E
+260 -32269 0xFFFF81F3
+265 -32642 0xFFFF807E
+270 -32767 0xFFFF8001
+275 -32642 0xFFFF807E
+280 -32269 0xFFFF81F3
+285 -31650 0xFFFF845E
+290 -30790 0xFFFF87BA
+295 -29696 0xFFFF8C00
+300 -28377 0xFFFF9127
+305 -26841 0xFFFF9727
+310 -25100 0xFFFF9DF4
+315 -23169 0xFFFFA57F
+320 -21062 0xFFFFADBA
+325 -18794 0xFFFFB696
+330 -16383 0xFFFFC001
+335 -13847 0xFFFFC9E9
+340 -11206 0xFFFFD43A
+345 -8480 0xFFFFDEE0
+350 -5689 0xFFFFE9C7
+355 -2855 0xFFFFF4D9
+360     0 0x   0
+xGuru Meditation Error: Core  1 panic'ed (IllegalInstruction). Exception was unhandled.
+Memory dump at 0x400d3d1c: d4e50020 00f01d0d 0c0cc825
+Core  1 register dump:
+PC      : 0x400d3d21  PS      : 0x00060130  A0      : 0x00000000  A1      : 0x3ffce2c0  
+A2      : 0x00000000  A3      : 0x3ffc43f4  A4      : 0x00000000  A5      : 0x00000000  
+A6      : 0x00000000  A7      : 0x00000000  A8      : 0x800d3d21  A9      : 0x3ffce2a0  
+A10     : 0x0000000a  A11     : 0x3f40deeb  A12     : 0x00000000  A13     : 0x00000004  
+A14     : 0x3ffbc390  A15     : 0x80000001  SAR     : 0x00000000  EXCCAUSE: 0x00000000  
+EXCVADDR: 0x00000000  LBEG    : 0x400954a9  LEND    : 0x400954b9  LCOUNT  : 0xffffffff  
+
+
+Backtrace: 0x400d3d1e:0x3ffce2c0
+
+
+
+
+ELF file SHA256: a0e869f57b62e5cd
+
+Rebooting...
+ets Jul 29 2019 12:21:46
+
+rst:0xc (SW_CPU_RESET),boot:0x17 (SPI_FAST_FLASH_BOOT)
+configsip: 0, SPIWP:0xee
+clk_drv:0x00,q_drv:0x00,d_drv:0x00,cs0_drv:0x00,hd_drv:0x00,wp_drv:0x00
+mode:DIO, clock div:1
+load:0x3fff0030,len:1184
+load:0x40078000,len:13260
+load:0x40080400,len:3028
+entry 0x400805e4
+not a t-beam ... moving onM5Core2 initializing...axp: vbus limit off
+axp: gpio1 init
+axp: gpio2 init
+axp: rtc battery charging enabled
+axp: esp32 power voltage was set to 3.35v
+axp: lcd backlight voltage was set to 2.80v
+axp: lcd logic and sdcard voltage preset to 3.3v
+axp: vibrator voltage preset to 2v
+FT6336 ready (fw id 0x01 rel 1, lib 0x3008)
+OK
+Motor Test
+LED Test
+Addr:0x34 - Name:Axp192
+I2C Axp192 Found
+Addr:0x38 - Name:CST Touch
+I2C CST Touch Found
+Addr:0x68 - Name:IMU6886
+I2C IMU6886 Found
+Addr:0x51 - Name:BM8563
+I2C BM8563 Found
+Addr:0x35 - Name:AT608A
+I2C AT608A Found
+AT608A Check Successful
+ECCX08 Serial Number = 0123EFFBF51BE4C501
+
+PSRAM malloc Successful
+PSRAM W&R Successful
+IMU Check Successful
+SDCard Found
+SDCard Type = 3 
+SDCard Size = 15193 
+SDCard Type = 3 
+SDCard Size = 15193 
+Scanning all i2c addresses
+
+device at 34
+device at 35
+device at 38
+device at 51
+device at 68
+Scanning all i2c addresses done
+
+
+               : Welcome to TouchView
+Button A Sets  : E_MOVE will be ignored
+Button B Sets  : Long Presses will be detected
+Button C Sets  : Key Repeat Disabled
+To Use         : Touch the Screen
+QUARTER_SINE = 90
+ i =   0  degrees = 0.000      0 0x   0 
+ i =   1  degrees = 1.000    571 0x 23B 
+ i =   2  degrees = 2.000   1143 0x 477 
+ i =   3  degrees = 3.000   1714 0x 6B2 
+ i =   4  degrees = 4.000   2285 0x 8ED 
+ i =   5  degrees = 5.000   2855 0x B27 
+ i =   6  degrees = 6.000   3425 0x D61 
+ i =   7  degrees = 7.000   3993 0x F99 
+ i =   8  degrees = 8.000   4560 0x11D0 
+ i =   9  degrees = 9.000   5125 0x1405 
+ i =  10  degrees = 10.000   5689 0x1639 
+ i =  11  degrees = 11.000   6252 0x186C 
+ i =  12  degrees = 12.000   6812 0x1A9C 
+ i =  13  degrees = 13.000   7370 0x1CCA 
+ i =  14  degrees = 14.000   7927 0x1EF7 
+ i =  15  degrees = 15.000   8480 0x2120 
+ i =  16  degrees = 16.000   9031 0x2347 
+ i =  17  degrees = 17.000   9580 0x256C 
+ i =  18  degrees = 18.000  10125 0x278D 
+ i =  19  degrees = 19.000  10667 0x29AB 
+ i =  20  degrees = 20.000  11206 0x2BC6 
+ i =  21  degrees = 21.000  11742 0x2DDE 
+ i =  22  degrees = 22.000  12274 0x2FF2 
+ i =  23  degrees = 23.000  12803 0x3203 
+ i =  24  degrees = 24.000  13327 0x340F 
+ i =  25  degrees = 25.000  13847 0x3617 
+ i =  26  degrees = 26.000  14364 0x381C 
+ i =  27  degrees = 27.000  14875 0x3A1B 
+ i =  28  degrees = 28.000  15383 0x3C17 
+ i =  29  degrees = 29.000  15885 0x3E0D 
+ i =  30  degrees = 30.000  16383 0x3FFF 
+ i =  31  degrees = 31.000  16876 0x41EC 
+ i =  32  degrees = 32.000  17363 0x43D3 
+ i =  33  degrees = 33.000  17846 0x45B6 
+ i =  34  degrees = 34.000  18323 0x4793 
+ i =  35  degrees = 35.000  18794 0x496A 
+ i =  36  degrees = 36.000  19259 0x4B3B 
+ i =  37  degrees = 37.000  19719 0x4D07 
+ i =  38  degrees = 38.000  20173 0x4ECD 
+ i =  39  degrees = 39.000  20620 0x508C 
+ i =  40  degrees = 40.000  21062 0x5246 
+ i =  41  degrees = 41.000  21497 0x53F9 
+ i =  42  degrees = 42.000  21925 0x55A5 
+ i =  43  degrees = 43.000  22347 0x574B 
+ i =  44  degrees = 44.000  22761 0x58E9 
+ i =  45  degrees = 45.000  23169 0x5A81 
+ i =  46  degrees = 46.000  23570 0x5C12 
+ i =  47  degrees = 47.000  23964 0x5D9C 
+ i =  48  degrees = 48.000  24350 0x5F1E 
+ i =  49  degrees = 49.000  24729 0x6099 
+ i =  50  degrees = 50.000  25100 0x620C 
+ i =  51  degrees = 51.000  25464 0x6378 
+ i =  52  degrees = 52.000  25820 0x64DC 
+ i =  53  degrees = 53.000  26168 0x6638 
+ i =  54  degrees = 54.000  26509 0x678D 
+ i =  55  degrees = 55.000  26841 0x68D9 
+ i =  56  degrees = 56.000  27165 0x6A1D 
+ i =  57  degrees = 57.000  27480 0x6B58 
+ i =  58  degrees = 58.000  27787 0x6C8B 
+ i =  59  degrees = 59.000  28086 0x6DB6 
+ i =  60  degrees = 60.000  28377 0x6ED9 
+ i =  61  degrees = 61.000  28658 0x6FF2 
+ i =  62  degrees = 62.000  28931 0x7103 
+ i =  63  degrees = 63.000  29195 0x720B 
+ i =  64  degrees = 64.000  29450 0x730A 
+ i =  65  degrees = 65.000  29696 0x7400 
+ i =  66  degrees = 66.000  29934 0x74EE 
+ i =  67  degrees = 67.000  30162 0x75D2 
+ i =  68  degrees = 68.000  30381 0x76AD 
+ i =  69  degrees = 69.000  30590 0x777E 
+ i =  70  degrees = 70.000  30790 0x7846 
+ i =  71  degrees = 71.000  30981 0x7905 
+ i =  72  degrees = 72.000  31163 0x79BB 
+ i =  73  degrees = 73.000  31335 0x7A67 
+ i =  74  degrees = 74.000  31497 0x7B09 
+ i =  75  degrees = 75.000  31650 0x7BA2 
+ i =  76  degrees = 76.000  31793 0x7C31 
+ i =  77  degrees = 77.000  31927 0x7CB7 
+ i =  78  degrees = 78.000  32050 0x7D32 
+ i =  79  degrees = 79.000  32164 0x7DA4 
+ i =  80  degrees = 80.000  32269 0x7E0D 
+ i =  81  degrees = 81.000  32363 0x7E6B 
+ i =  82  degrees = 82.000  32448 0x7EC0 
+ i =  83  degrees = 83.000  32522 0x7F0A 
+ i =  84  degrees = 84.000  32587 0x7F4B 
+ i =  85  degrees = 85.000  32642 0x7F82 
+ i =  86  degrees = 86.000  32687 0x7FAF 
+ i =  87  degrees = 87.000  32722 0x7FD2 
+ i =  88  degrees = 88.000  32747 0x7FEB 
+ i =  89  degrees = 89.000  32762 0x7FFA 
+ i =  90  degrees = 90.000  32767 0x7FFF 
+
+  0     0 0x   0
+  5  2855 0x B27
+ 10  5689 0x1639
+ 15  8480 0x2120
+ 20 11206 0x2BC6
+ 25 13847 0x3617
+ 30 16383 0x3FFF
+ 35 18794 0x496A
+ 40 21062 0x5246
+ 45 23169 0x5A81
+ 50 25100 0x620C
+ 55 26841 0x68D9
+ 60 28377 0x6ED9
+ 65 29696 0x7400
+ 70 30790 0x7846
+ 75 31650 0x7BA2
+ 80 32269 0x7E0D
+ 85 32642 0x7F82
+ 90 32767 0x7FFF
+ 95 32642 0x7F82
+100 32269 0x7E0D
+105 31650 0x7BA2
+110 30790 0x7846
+115 29696 0x7400
+120 28377 0x6ED9
+125 26841 0x68D9
+130 25100 0x620C
+135 23169 0x5A81
+140 21062 0x5246
+145 18794 0x496A
+150 16383 0x3FFF
+155 13847 0x3617
+160 11206 0x2BC6
+165  8480 0x2120
+170  5689 0x1639
+175  2855 0x B27
+180     0 0x   0
+185 -2855 0xFFFFF4D9
+190 -5689 0xFFFFE9C7
+195 -8480 0xFFFFDEE0
+200 -11206 0xFFFFD43A
+205 -13847 0xFFFFC9E9
+210 -16383 0xFFFFC001
+215 -18794 0xFFFFB696
+220 -21062 0xFFFFADBA
+225 -23169 0xFFFFA57F
+230 -25100 0xFFFF9DF4
+235 -26841 0xFFFF9727
+240 -28377 0xFFFF9127
+245 -29696 0xFFFF8C00
+250 -30790 0xFFFF87BA
+255 -31650 0xFFFF845E
+260 -32269 0xFFFF81F3
+265 -32642 0xFFFF807E
+270 -32767 0xFFFF8001
+275 -32642 0xFFFF807E
+280 -32269 0xFFFF81F3
+285 -31650 0xFFFF845E
+290 -30790 0xFFFF87BA
+295 -29696 0xFFFF8C00
+300 -28377 0xFFFF9127
+305 -26841 0xFFFF9727
+310 -25100 0xFFFF9DF4
+315 -23169 0xFFFFA57F
+320 -21062 0xFFFFADBA
+325 -18794 0xFFFFB696
+330 -16383 0xFFFFC001
+335 -13847 0xFFFFC9E9
+340 -11206 0xFFFFD43A
+345 -8480 0xFFFFDEE0
+350 -5689 0xFFFFE9C7
+355 -2855 0xFFFFF4D9
+360     0 0x   0
+xRIFF           : RIFF
+chunk_size     : 8454298
+WAVEfmt        : WAVEfmt 
+fmt_chunk_size : 16
+audiofmt       : 1
+channel        : 1
+saGuru Meditation Error: Core  1 panic'ed (IllegalInstruction). Exception was unhandled.
+Memory dump at 0x400d3d1c: d4e50020 00f01d0d 0c0cc825
+Core  1 register dump:
+PC      : 0x400d3d21  PS      : 0x00060b30  A0      : 0x00000000  A1      : 0x3ffce2c0  
+A2      : 0x00000000  A3      : 0x3ffc43f4  A4      : 0x00000000  A5      : 0x00000000  
+A6      : 0x00000000  A7      : 0x00000000  A8      : 0x800d3d21  A9      : 0x3ffce2a0  
+A10     : 0x0000000a  A11     : 0x3f40deeb  A12     : 0x00000000  A13     : 0x00000004  
+A14     : 0x3ffce358  A15     : 0x80000001  SAR     : 0x00000000  EXCCAUSE: 0x00000000  
+EXCVADDR: 0x00000000  LBEG    : 0x400954a9  LEND    : 0x400954b9  LCOUNT  : 0xffffffff  
+
+
+Backtrace: 0x400d3d1e:0x3ffce2c0
+
+
+
+
+ELF file SHA256: a0e869f57b62e5cd
+
+Rebooting...
+ets Jul 29 2019 12:21:46
+
+rst:0xc (SW_CPU_RESET),boot:0x17 (SPI_FAST_FLASH_BOOT)
+configsip: 0, SPIWP:0xee
+clk_drv:0x00,q_drv:0x00,d_drv:0x00,cs0_drv:0x00,hd_drv:0x00,wp_drv:0x00
+mode:DIO, clock div:1
+load:0x3fff0030,len:1184
+load:0x40078000,len:13260
+load:0x40080400,len:3028
+entry 0x400805e4
+not a t-beam ... moving onM5Core2 initializing...axp: vbus limit off
+axp: gpio1 init
+axp: gpio2 init
+axp: rtc battery charging enabled
+axp: esp32 power voltage was set to 3.35v
+axp: lcd backlight voltage was set to 2.80v
+axp: lcd logic and sdcard voltage preset to 3.3v
+axp: vibrator voltage preset to 2v
+touch: FT6336 ready (fw id 0x01 rel 1, lib 0x3008)
+OK
+Motor Test
+LED Test
+Addr:0x34 - Name:Axp192
+I2C Axp192 Found

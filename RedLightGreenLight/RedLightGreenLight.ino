@@ -18,19 +18,25 @@ https://github.com/mikalhart/TinyGPSPlus
 // https://github.com/pschatzmann/ESP32-A2DP.git
 // https://github.com/pschatzmann/arduino-audio-tools.git
 
+//#ARDUINO_M5STACK_Core2
+#include "Arduino.h"
+
+// this overrides CONFIG_LOG_MAXIMUM_LEVEL setting in menuconfig
+
+// and must be defined before including esp_log.h
+#define LOG_LOCAL_LEVEL  ESP_LOG_DEBUG
+#define MY_GLOBAL_DEBUG_LEVEL  ESP_LOG_DEBUG
+
+#include "esp_log.h"
 
 #include <TinyGPS++.h>
-#include <axp20x.h>
-//#include <esp_task_wdt.h> // Include the ESP32 Task Watchdog library
+#include <esp_task_wdt.h> // Include the ESP32 Task Watchdog library
 
 #include <iostream>
 #include <cstring>
 #include <string>
-
-
-#include <SPI.h>
-#include <Wire.h>  
-#include "SSD1306.h" 
+#include "M5Core2-only.h"
+#include "tbeam-only.h"
 
 #include "BluetoothA2DPSource.h"
 #include <math.h> 
@@ -38,7 +44,6 @@ https://github.com/mikalhart/TinyGPSPlus
 #include <assert.h>
 #include "lookup.h"   //table of targets
 
-#define BUILTIN_LED 4  // TIP t-beam
 #define BT_enabled
 #define SIMULATOR_enabled
 
@@ -46,7 +51,6 @@ https://github.com/mikalhart/TinyGPSPlus
 
 TinyGPSPlus gps;
 HardwareSerial GPS(1);
-AXP20X_Class axp;
 
 extern void radioTxInit(void);
 extern void radioSendPacket(char *message); 
@@ -161,7 +165,6 @@ void getData(void)
 
 
 gpsLocation gpsAverage;
-bool bActionGPIO38	= false;
 
 
 #define GPS_SAMPLE_SIZE 4
@@ -171,16 +174,6 @@ uint8_t sIndex;
 char BT_SSID[17] = "== none ====";
 
 //------------------------------------------------------------------
-
-#define SCK     5    // GPIO5  -- SX1278's SCK
-#define MISO    19   // GPIO19 -- SX1278's MISO
-#define MOSI    27   // GPIO27 -- SX1278's MOSI
-#define SS      18   // GPIO18 -- SX1278's CS
-#define RST     14   // GPIO14 -- SX1278's RESET
-#define DI0     26   // GPIO26 -- SX1278's IRQ(Interrupt Request)
-
-SSD1306 display(0x3c, 21, 22);
-
 bool cardinalSin(int16_t windowCenter, uint8_t width, int16_t test)
 {
 	int16_t LHS, RHS, TEST;
@@ -259,132 +252,7 @@ void calcGPSaverage(void)
 	gpsAverage = result;
 }
 
-//------------------------------------------------------------------
-// Theres only one USR button on the T-beam .
 
-#define GPIO_BUTTON 38
-
-
-void IRAM_ATTR snapShotISR() 
-{
-	unsigned long now = 0;	
-	static unsigned long lastTimeCalled = 0; 
-
-    now = millis();
-
-	// if last down time is < 250mS its a bounce of earlier event
-	// just ignore and reset the counter.
-
-	if (now - lastTimeCalled < 250) 
-	{
-		lastTimeCalled = now;
-		return;
-	}
-
-	// no activity in the last 250ms, must be a new event.
-	
-	if (! bActionGPIO38)
-	{
-		bActionGPIO38  = true;
-	}
-}
-
-//----------------------------
-
-void setupButton() 
-{
-    pinMode(GPIO_BUTTON, INPUT_PULLUP);
-    attachInterrupt(GPIO_BUTTON, snapShotISR, FALLING);
-}
-
-
-//------------------------------------------------------------------
-
-u_int8_t char_height = 0;
-
-static void setFont(uint8_t size)
-{
-	switch (size)
-	{
-		case 10:
-			display.setFont(ArialMT_Plain_10);
-			char_height = 10;
-		break;
-		
-		case 16:
-			display.setFont(ArialMT_Plain_16);
-			char_height = 16;
-		break;
-
-		case 24:
-			display.setFont(ArialMT_Plain_24);
-			char_height = 24;
-		break;
-	}
-}
-//---------------------------------------------------------
-
-int  xprintf(uint8_t lineNo, const char *format, ...) 
-{
-	va_list args;
-	va_start(args, format);
-	char buffer[30];
-	vsnprintf(buffer, sizeof(buffer)-1, format, args);
-
-	// erase past background to black
-	display.setColor(BLACK);
-	display.fillRect(0, lineNo * char_height, display.getWidth(), char_height);
-	display.setColor(WHITE);
-	
-	display.drawString(0, lineNo * char_height, buffer);
-	
-	va_end(args);
-	return 0;
-}
-
-//---------------------------------------------------------
-
-int  oprintf(uint8_t lineNo, const char *format, ...) 
-{
-	va_list args;
-	va_start(args, format);
-	char buffer[30];
-	vsnprintf(buffer, sizeof(buffer)-1, format, args);
-
-	// erase past background to black
-	display.setColor(BLACK);
-	display.fillRect(0, lineNo * char_height, display.getWidth(), char_height);
-	
-	display.setColor(WHITE);
-	display.drawRect(0, (lineNo * char_height)+1 , display.getWidth(), char_height );
-	
-	display.drawString(0, lineNo * char_height, buffer);
-	
-	va_end(args);
-	return 0;
-}
-
-
-//---------------------------------------------------------
-// inverted printf  (black text on white background)
-
-int  iprintf(uint8_t lineNo, const char *format, ...) 
-{
-	va_list args;
-	va_start(args, format);
-	char buffer[30];
-	vsnprintf(buffer, sizeof(buffer)-1, format, args);
-
-	// erase past background to WHITE
-	display.setColor(WHITE);
-	display.fillRect(0, lineNo * char_height, display.getWidth(), char_height);
-	display.setColor(BLACK);
-	
-	display.drawString(0, lineNo * char_height, buffer);
-	
-	va_end(args);
-	return 0;
-}
 
 //---------------------------------------------------------
 // return index to closest target.
@@ -451,7 +319,7 @@ bool findClosestCamera(float vehicleLat, float vehicleLng)
 
 void loop()
 {
-	vTaskDelete(NULL);
+	delay(0); //vTaskDelete(NULL);
 }
 
 //---------------------------------------------------------
@@ -614,21 +482,21 @@ void stateDisplay(void)
 		else
 			oprintf(2, "%3d m %3d %s", dist, course, cardinal);
 
-		display.display();
+		REFRESH; 
+			
 	}	
 
 #endif
 }
 //---------------------------------------------------------
-extern void radioSendPacket(char *message);
 
-void loop1(void *not_used)
+void loop_GPS(void *not_used)
 {
 	char msg[30];
 	unsigned long startProfileTime;
 	unsigned long difftime;
 
-	esp_task_wdt_add(NULL); //add current thread to WDT watch
+	//esp_task_wdt_add(NULL); //add current thread to WDT watch
 	
 	snprintf(msg, sizeof(msg),"hello"); 
 
@@ -636,7 +504,7 @@ void loop1(void *not_used)
 
 	while(1)
 	{
-	  	esp_task_wdt_reset();
+	  	//esp_task_wdt_reset();
 		getData();
 		
 		{
@@ -778,121 +646,38 @@ void loop2(void *not_used)
 }
 
 //---------------------------------------------------------
-
-static void smartDelay(unsigned long ms)
-{
-  unsigned long start = millis();
-  do
-  {
-    while (GPS.available())
-      gps.encode(GPS.read());
-	  delay(100);		// stop hard loop allow multi tasking
-	  esp_task_wdt_reset();
-  } while (millis() - start < ms);
-}
-
-//---------------------------------------------------------
-extern void setupRadioTx(void);
-
-void setBlueLED(bool ON)
-{
-	axp.setChgLEDMode(ON ? AXP20X_LED_LOW_LEVEL : AXP20X_LED_OFF);
-}
-
-void setRedLED(bool ON)
-{
-	digitalWrite(BUILTIN_LED, ON ? 0 : 1);
-}
-
-//---------------------------------------------------------
 extern void setup_sine (void);
+extern void loop_siri(void *notUsed);
+extern bool playFile(char *pianoSong);
+extern void setup_siri(void);
 
-/* Fixes complier error invalid conversion from int to const esp_task_wdt_config_t*':
-esp_task_wdt_config_t twdt_config = 
+// Task Watchdog configuration
+#define WDT_TIMEOUT 10
+
+/*
+// https://github.com/espressif/esp-idf/blob/v5.2.2/examples/system/task_watchdog/main/task_watchdog_example_main.c
+esp_task_wdt_config_t pork =
 {
-    .timeout_ms = 10000,
-	//.idle_core_mask = (1 << configNUM_CORES) - 1,
-    .trigger_panic = true,
+    .timeout_ms = WDT_TIMEOUT * 1000,                 // Convertin ms
+    .idle_core_mask = (1 << portNUM_PROCESSORS) - 1,  // Bitmask of all cores
+    .trigger_panic = true                             // Enable panic to restart ESP32
 };
 */
 
+static const char *TAG = "setup";
+
 void setup()
 {
-
+	delay(1000);  // safety for boot.
+	
 	Serial.begin(115200);
-
-	setupButton();
+	delay(1000);
+	esp_log_level_set("*", MY_GLOBAL_DEBUG_LEVEL); // Set log level to include ESP_LOGD messages
 	
-	// oled stuff
-	pinMode(16,OUTPUT);
-	digitalWrite(16, LOW);	  // set GPIO16 low to reset OLED
-	delay(50); 
-	digitalWrite(16, HIGH); // while OLED is running, must set GPIO16 in high?
-
-	// gps power mgt
-	
-	Wire.begin(21, 22);
-	if (!axp.begin(Wire, AXP192_SLAVE_ADDRESS)) 
-	{
-		Serial.println("AXP192 Begin PASS");
-	} 
-	else
-	{
-		Serial.println("AXP192 Begin FAIL");
-	}
-	
-	axp.setPowerOutPut(AXP192_LDO2, AXP202_ON);		//lora
-	axp.setPowerOutPut(AXP192_LDO3, AXP202_ON);		//gps
-	axp.setPowerOutPut(AXP192_DCDC2, AXP202_ON);
-	axp.setPowerOutPut(AXP192_EXTEN, AXP202_ON);
-	axp.setPowerOutPut(AXP192_DCDC1, AXP202_ON);	//oled
-
-	GPS.begin(9600, SERIAL_8N1, 34, 12);   //17-TX 18-RX
-
-#ifdef BT_enabled
-	// bluetooth init
-	a2dp_source.set_ssid_callback(isValid);
-	a2dp_source.set_auto_reconnect(false);
-	a2dp_source.set_data_callback_in_frames(get_data_frames);
-	a2dp_source.set_volume(30);
-	a2dp_source.start();  
-#endif
-
-	display.init();
-	display.flipScreenVertically();  
-	setFont(16);
-	
-	display.clear();
-	display.setTextAlignment(TEXT_ALIGN_LEFT);
-
-	radioTxInit();
-
-	xprintf(0, "BUILD");
-	xprintf(1, "%s" , __DATE__);
-	xprintf(2, "%s", __TIME__);
-	display.display();
-
-	pinMode(BUILTIN_LED, OUTPUT);
-	setRedLED(0);
-	setBlueLED(0);
-
+	setup_tbeam();
+	setup_M5();
 	setup_sine();
-/*
-	ESP_ERROR_CHECK(esp_task_wdt_reconfigure(&twdt_config));
-
-	esp_task_wdt_deinit(); //wdt is enabled by default, so we need to 'deinit' it first
-	
-	esp_task_wdt_init(&twdt_config); //enable panic so ESP32 restarts
-	
-
-	// Initialize the watchdog timer with a timeout of 10 seconds.  This is optional, but you can adjust it.
-  	esp_task_wdt_init(&twdt_config); 
-
-  	// Start the watchdog timer.  This is necessary for the watchdog to start counting.
-  	//esp_task_wdt_start();
-*/	
-
-	delay(4000);
+	setup_siri();
 
 #if 0  // set cardinal view range
 	#define STEP 20
@@ -930,11 +715,14 @@ void setup()
 
 	
 	TaskHandle_t foo;
-	//xTaskCreate(loop1, "loop1", 4096, NULL, 5, &foo);
+	//xTaskCreate(loop_GPS, "loop_GPS", 4096, NULL, 5, &foo);
 
-	xTaskCreatePinnedToCore(loop1, "FOAD", 4096, NULL, 1, NULL, 0);
+	//xTaskCreatePinnedToCore(loop_GPS,  "GPS",  4096, NULL, 1, NULL, 0);
 
-	//xTaskCreatePinnedToCore(loop2, "loop2", 4096, NULL, 1, NULL, 1);
+	xTaskCreatePinnedToCore(loop_siri, "Siri", 4096, NULL, 1, NULL, 1);
+
+	
+	playFile("resources_speak_sd.wav");
 
 	 
 }
